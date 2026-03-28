@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>saveHXPE // ENGINE CONFIGURATION</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-surface": "#e2e2e2",
+              "inverse-on-surface": "#303030",
+              "surface-dim": "#131313",
+              "surface-container-lowest": "#0e0e0e",
+              "secondary-container": "#454747",
+              "background": "#131313",
+              "on-primary-fixed-variant": "#e2e2e2",
+              "on-tertiary": "#1a1c1c",
+              "on-primary": "#1a1c1c",
+              "tertiary": "#e2e2e2",
+              "primary": "#ffffff",
+              "on-secondary": "#1a1c1c",
+              "error": "#ffb4ab",
+              "secondary-fixed": "#c6c6c7",
+              "on-primary-fixed": "#ffffff",
+              "on-tertiary-fixed": "#ffffff",
+              "on-background": "#e2e2e2",
+              "tertiary-fixed": "#5d5f5f",
+              "surface-variant": "#353535",
+              "on-secondary-fixed": "#1a1c1c",
+              "surface-container": "#1f1f1f",
+              "inverse-primary": "#5d5f5f",
+              "on-surface-variant": "#c6c6c6",
+              "primary-fixed": "#5d5f5f",
+              "tertiary-fixed-dim": "#454747",
+              "tertiary-container": "#909191",
+              "on-surface": "#e2e2e2",
+              "secondary-fixed-dim": "#aaabab",
+              "on-error": "#690005",
+              "surface-container-low": "#1b1b1b",
+              "on-secondary-container": "#e2e2e2",
+              "surface-container-highest": "#353535",
+              "on-error-container": "#ffdad6",
+              "surface-bright": "#393939",
+              "error-container": "#93000a",
+              "surface-tint": "#c6c6c7",
+              "primary-container": "#d4d4d4",
+              "secondary": "#c6c6c7",
+              "surface-container-high": "#2a2a2a",
+              "primary-fixed-dim": "#454747",
+              "outline": "#919191",
+              "on-tertiary-container": "#000000",
+              "surface": "#131313",
+              "on-secondary-fixed-variant": "#3a3c3c",
+              "outline-variant": "#474747",
+              "on-primary-container": "#000000",
+              "on-tertiary-fixed-variant": "#e2e2e2"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #131313;
+            color: #e2e2e2;
+            font-family: 'Inter', sans-serif;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1b1b1b;
+            height: 4px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 8px;
+            background: #ffffff;
+            cursor: pointer;
+            border-radius: 0;
+        }
+    </style>
+</head>
+<body class="bg-surface overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-neutral-950 text-white font-['Space_Grotesk'] font-bold tracking-tight uppercase border-b border-neutral-800 flex justify-between items-center px-6 h-16 w-full">
+<div class="text-xl font-black text-white tracking-tighter">saveHXPE // LYRIC ENGINE</div>
+<nav class="hidden md:flex items-center space-x-8">
+<a class="text-neutral-500 hover:bg-white hover:text-black transition-colors duration-100 px-2 py-1" href="#">WRITER</a>
+<a class="text-neutral-500 hover:bg-white hover:text-black transition-colors duration-100 px-2 py-1" href="#">HISTORY</a>
+<a class="text-neutral-500 hover:bg-white hover:text-black transition-colors duration-100 px-2 py-1" href="#">RHYME_DB</a>
+<a class="text-white hover:bg-white hover:text-black transition-colors duration-100 px-2 py-1" href="#">SETTINGS</a>
+</nav>
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined cursor-pointer hover:text-white transition-colors" data-icon="bolt">bolt</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-white transition-colors" data-icon="terminal">terminal</span>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 z-40 bg-neutral-900 text-white font-['Space_Grotesk'] text-xs font-bold tracking-[0.05em] uppercase border-r border-neutral-800 flex flex-col h-full pt-20 pb-8 hidden md:flex">
+<div class="px-6 mb-8">
+<div class="text-lg font-black text-white">saveHXPE</div>
+<div class="text-[10px] text-outline opacity-50">LYRIC_ENGINE_V1.0</div>
+</div>
+<nav class="flex-grow space-y-1">
+<a class="text-neutral-400 flex items-center px-4 py-3 w-full hover:bg-neutral-800 transition-none" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="edit_note">edit_note</span>
+                WRITER
+            </a>
+<a class="text-neutral-400 flex items-center px-4 py-3 w-full hover:bg-neutral-800 transition-none" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="history">history</span>
+                HISTORY
+            </a>
+<a class="text-neutral-400 flex items-center px-4 py-3 w-full hover:bg-neutral-800 transition-none" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="layers">layers</span>
+                RHYME_DB
+            </a>
+<a class="bg-white text-black flex items-center px-4 py-3 w-full" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="settings_input_component">settings_input_component</span>
+                SETTINGS
+            </a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full bg-primary text-on-primary py-4 font-black tracking-widest text-center hover:bg-black hover:text-white border border-transparent hover:border-white transition-all">
+                NEW_SESSION
+            </button>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="pt-24 pb-12 md:pl-72 px-6 min-h-screen bg-surface">
+<div class="max-w-5xl mx-auto">
+<!-- Header Section -->
+<div class="mb-12">
+<h1 class="font-headline text-5xl font-black tracking-tighter uppercase mb-2">saveHXPE // ENGINE CONFIGURATION</h1>
+<p class="font-label text-outline text-xs tracking-[0.2em] uppercase">System-Level Hardware Overrides &amp; Algorithmic Calibration</p>
+</div>
+<!-- Bento Grid Settings -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-1">
+<!-- AI CORE CALIBRATION -->
+<div class="md:col-span-8 bg-surface-container-low p-8 border-l-4 border-primary">
+<div class="flex justify-between items-start mb-10">
+<div>
+<h2 class="font-headline text-2xl font-bold uppercase mb-1">AI_CORE_CALIBRATION</h2>
+<p class="text-on-surface-variant text-sm max-w-md">Fine-tune the neural processing engine for semantic depth vs. phonetic accuracy.</p>
+</div>
+<div class="flex items-center space-x-2">
+<span class="font-label text-[10px] text-primary bg-surface-container-highest px-2 py-1">STATUS: OPTIMIZED</span>
+</div>
+</div>
+<div class="space-y-8">
+<div>
+<div class="flex justify-between font-label text-[10px] uppercase mb-4 tracking-widest">
+<span>SEMANTIC_DRIFT</span>
+<span class="text-primary">74%</span>
+</div>
+<input class="w-full" max="100" min="0" type="range" value="74"/>
+</div>
+<div>
+<div class="flex justify-between font-label text-[10px] uppercase mb-4 tracking-widest">
+<span>PHONETIC_AGGRESSION</span>
+<span class="text-primary">92%</span>
+</div>
+<input class="w-full" max="100" min="0" type="range" value="92"/>
+</div>
+</div>
+</div>
+<!-- EXPORT_FORMATS -->
+<div class="md:col-span-4 bg-surface-container-highest p-8 flex flex-col">
+<h2 class="font-headline text-xl font-bold uppercase mb-4">EXPORT_FORMATS</h2>
+<div class="space-y-2 flex-grow">
+<label class="flex items-center justify-between p-4 bg-surface-dim hover:bg-white hover:text-black cursor-pointer group transition-colors">
+<span class="font-label text-xs font-bold uppercase">.JSON_RAW</span>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100" data-icon="check">check</span>
+</label>
+<label class="flex items-center justify-between p-4 bg-white text-black cursor-pointer group transition-colors border border-white">
+<span class="font-label text-xs font-bold uppercase">.TXT_EDITORIAL</span>
+<span class="material-symbols-outlined text-sm" data-icon="check">check</span>
+</label>
+<label class="flex items-center justify-between p-4 bg-surface-dim hover:bg-white hover:text-black cursor-pointer group transition-colors">
+<span class="font-label text-xs font-bold uppercase">.MD_STRUCTURED</span>
+<span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100" data-icon="check">check</span>
+</label>
+</div>
+<p class="text-[10px] text-outline mt-6 font-mono leading-relaxed uppercase">Auto-sync enabled for cloud repository.</p>
+</div>
+<!-- RHYME_ALGORITHM_STRENGTH -->
+<div class="md:col-span-5 bg-surface-container-low p-8">
+<h2 class="font-headline text-xl font-bold uppercase mb-6">RHYME_ALGORITHM_STRENGTH</h2>
+<div class="grid grid-cols-2 gap-px bg-outline-variant border border-outline-variant">
+<button class="bg-surface-dim py-4 font-label text-[10px] uppercase tracking-widest text-outline hover:text-white transition-colors">SIMPLE</button>
+<button class="bg-surface-dim py-4 font-label text-[10px] uppercase tracking-widest text-outline hover:text-white transition-colors">MULTI</button>
+<button class="bg-white text-black py-4 font-label text-[10px] uppercase tracking-widest font-black">INTERNAL</button>
+<button class="bg-surface-dim py-4 font-label text-[10px] uppercase tracking-widest text-outline hover:text-white transition-colors">SLANT</button>
+</div>
+<div class="mt-8 pt-8 border-t border-outline-variant">
+<div class="flex items-center justify-between">
+<span class="font-label text-[10px] uppercase text-on-surface-variant">AUTO_REJECT_CLICHES</span>
+<div class="w-12 h-6 bg-primary p-1 flex justify-end items-center">
+<div class="w-4 h-4 bg-on-primary"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- UI_INTENSITY -->
+<div class="md:col-span-7 bg-surface-container-high p-8 flex flex-col justify-between">
+<div>
+<h2 class="font-headline text-xl font-bold uppercase mb-2">UI_INTENSITY</h2>
+<p class="text-on-surface-variant text-sm mb-8">Modify the visual refresh rate and flickering effects for optimal focus.</p>
+</div>
+<div class="flex items-end space-x-1 h-24">
+<div class="bg-outline-variant w-full h-[20%]"></div>
+<div class="bg-outline-variant w-full h-[45%]"></div>
+<div class="bg-outline-variant w-full h-[30%]"></div>
+<div class="bg-primary w-full h-[80%]"></div>
+<div class="bg-outline-variant w-full h-[60%]"></div>
+<div class="bg-outline-variant w-full h-[40%]"></div>
+<div class="bg-outline-variant w-full h-[90%]"></div>
+<div class="bg-outline-variant w-full h-[55%]"></div>
+<div class="bg-outline-variant w-full h-[25%]"></div>
+</div>
+<div class="mt-8 flex space-x-4">
+<button class="flex-1 border border-primary py-3 font-label text-[10px] uppercase tracking-[0.2em] hover:bg-primary hover:text-black transition-all">STEADY</button>
+<button class="flex-1 bg-primary text-black py-3 font-label text-[10px] uppercase tracking-[0.2em] font-bold">GLITCH_ACTIVE</button>
+</div>
+</div>
+<!-- HARDWARE STATUS (Footer of the grid) -->
+<div class="md:col-span-12 bg-surface-container-lowest p-4 flex justify-between items-center text-[10px] font-mono text-outline uppercase">
+<div class="flex space-x-8">
+<span>CPU_LOAD: 12%</span>
+<span>MEM_ALLOC: 4.2GB</span>
+<span>LATENCY: 4MS</span>
+</div>
+<div class="flex space-x-4 items-center">
+<span class="text-primary animate-pulse">● SYSTEM_LIVE</span>
+<span>v1.0.4-STABLE</span>
+</div>
+</div>
+</div>
+<!-- Danger Zone -->
+<div class="mt-12 border border-error p-8 bg-error-container/10">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+<div>
+<h3 class="font-headline text-lg font-bold text-error uppercase mb-1">FACTORY_RESET_ENGINE</h3>
+<p class="text-on-error-container text-xs">This will erase all learned rhyme schemes and custom vocabulary clusters.</p>
+</div>
+<button class="bg-error text-on-error px-8 py-3 font-label text-xs font-black tracking-widest uppercase hover:bg-white hover:text-black transition-all">
+                        PURGE_SYSTEM
+                    </button>
+</div>
+</div>
+<!-- Visual Asset Example -->
+<div class="mt-12 w-full h-64 overflow-hidden relative grayscale">
+<img alt="Engine Core Visualization" class="w-full h-full object-cover opacity-30" data-alt="high-tech server room with glowing green lights and complex wiring in a dark industrial data center" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwvRMQMDTzPvFiyd6jyj6fXCTTh0-bL5NkZxIxD0QAng614mC-wbZb8F4LOc58wOwFlg16w_FtecoCnJABcMCKAtvFg-GitsvPvvM9rXmdYJfUPKS8VkHcc__FczNU0t5OvM4uOUfssUcHHY7Os2t3CcGsMQuvNHF4BUUVvb334DxJELZFKaRqtDDdwnGTKGiYjdz1Qo6YlHi1JVI0pwBukbeWyiV5Oj1N5FNpltf_TJJgPOzElki8ifk7CbdQHrhgUF904bay5AYU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent"></div>
+<div class="absolute bottom-6 left-6">
+<div class="font-headline text-2xl font-black uppercase">CORE_VISUALIZER</div>
+<div class="font-label text-[10px] text-outline uppercase tracking-widest">LIVE_STREAM_PROCESSED</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 w-full bg-neutral-900 border-t border-neutral-800 flex justify-around items-center h-16 z-50">
+<a class="text-neutral-500 flex flex-col items-center" href="#">
+<span class="material-symbols-outlined" data-icon="edit_note">edit_note</span>
+</a>
+<a class="text-neutral-500 flex flex-col items-center" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</a>
+<a class="text-neutral-500 flex flex-col items-center" href="#">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+</a>
+<a class="text-white flex flex-col items-center" href="#">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+</a>
+</nav>
+</body></html>

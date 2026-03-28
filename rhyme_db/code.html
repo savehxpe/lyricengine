@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>saveHXPE // RHYME DATABASE</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-surface": "#e2e2e2",
+              "inverse-on-surface": "#303030",
+              "surface-dim": "#131313",
+              "surface-container-lowest": "#0e0e0e",
+              "secondary-container": "#454747",
+              "background": "#131313",
+              "on-primary-fixed-variant": "#e2e2e2",
+              "on-tertiary": "#1a1c1c",
+              "on-primary": "#1a1c1c",
+              "tertiary": "#e2e2e2",
+              "primary": "#ffffff",
+              "on-secondary": "#1a1c1c",
+              "error": "#ffb4ab",
+              "secondary-fixed": "#c6c6c7",
+              "on-primary-fixed": "#ffffff",
+              "on-tertiary-fixed": "#ffffff",
+              "on-background": "#e2e2e2",
+              "tertiary-fixed": "#5d5f5f",
+              "surface-variant": "#353535",
+              "on-secondary-fixed": "#1a1c1c",
+              "surface-container": "#1f1f1f",
+              "inverse-primary": "#5d5f5f",
+              "on-surface-variant": "#c6c6c6",
+              "primary-fixed": "#5d5f5f",
+              "tertiary-fixed-dim": "#454747",
+              "tertiary-container": "#909191",
+              "on-surface": "#e2e2e2",
+              "secondary-fixed-dim": "#aaabab",
+              "on-error": "#690005",
+              "surface-container-low": "#1b1b1b",
+              "on-secondary-container": "#e2e2e2",
+              "surface-container-highest": "#353535",
+              "on-error-container": "#ffdad6",
+              "surface-bright": "#393939",
+              "error-container": "#93000a",
+              "surface-tint": "#c6c6c7",
+              "primary-container": "#d4d4d4",
+              "secondary": "#c6c6c7",
+              "surface-container-high": "#2a2a2a",
+              "primary-fixed-dim": "#454747",
+              "outline": "#919191",
+              "on-tertiary-container": "#000000",
+              "surface": "#131313",
+              "on-secondary-fixed-variant": "#3a3c3c",
+              "outline-variant": "#474747",
+              "on-primary-container": "#000000",
+              "on-tertiary-fixed-variant": "#e2e2e2"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #131313;
+            color: #e2e2e2;
+            font-family: 'Inter', sans-serif;
+        }
+        .mono-tech {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-neutral-950 border-b border-neutral-800 flex justify-between items-center px-6 h-16 w-full">
+<div class="text-xl font-black text-white tracking-tighter font-['Space_Grotesk'] uppercase">
+            saveHXPE // LYRIC ENGINE
+        </div>
+<div class="flex items-center gap-6">
+<button class="text-neutral-500 hover:bg-white hover:text-black transition-colors duration-100 p-2">
+<span class="material-symbols-outlined">bolt</span>
+</button>
+<button class="text-neutral-500 hover:bg-white hover:text-black transition-colors duration-100 p-2">
+<span class="material-symbols-outlined">terminal</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 z-40 bg-neutral-900 border-r border-neutral-800 hidden md:flex flex-col pt-20 pb-8">
+<div class="px-6 mb-8">
+<div class="text-lg font-black text-white font-['Space_Grotesk']">saveHXPE</div>
+<div class="text-[10px] font-bold tracking-[0.2em] text-neutral-500 uppercase font-['Space_Grotesk']">LYRIC_ENGINE_V1.0</div>
+</div>
+<nav class="flex-1">
+<a class="text-neutral-400 flex items-center px-4 py-3 w-full hover:bg-neutral-800 font-['Space_Grotesk'] text-xs font-bold tracking-[0.05em] uppercase transition-none" href="#">
+<span class="material-symbols-outlined mr-4">edit_note</span>
+                WRITER
+            </a>
+<a class="text-neutral-400 flex items-center px-4 py-3 w-full hover:bg-neutral-800 font-['Space_Grotesk'] text-xs font-bold tracking-[0.05em] uppercase transition-none" href="#">
+<span class="material-symbols-outlined mr-4">history</span>
+                HISTORY
+            </a>
+<!-- Active State: RHYME_DB -->
+<a class="bg-white text-black flex items-center px-4 py-3 w-full font-['Space_Grotesk'] text-xs font-bold tracking-[0.05em] uppercase" href="#">
+<span class="material-symbols-outlined mr-4">layers</span>
+                RHYME_DB
+            </a>
+<a class="text-neutral-400 flex items-center px-4 py-3 w-full hover:bg-neutral-800 font-['Space_Grotesk'] text-xs font-bold tracking-[0.05em] uppercase transition-none" href="#">
+<span class="material-symbols-outlined mr-4">settings_input_component</span>
+                SETTINGS
+            </a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full bg-primary text-on-primary py-4 font-['Space_Grotesk'] text-xs font-black tracking-widest uppercase hover:bg-on-surface hover:text-surface transition-colors duration-100">
+                NEW_SESSION
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-24 pb-12 px-6 lg:px-12">
+<!-- Header Section -->
+<section class="mb-12">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="text-4xl md:text-6xl font-black font-headline tracking-tighter uppercase mb-2">RHYME_DATABASE</h1>
+<p class="text-on-surface-variant font-label text-sm tracking-widest uppercase">SYLLABIC_STRUCTURE // PHONETIC_MAPPING</p>
+</div>
+<div class="flex gap-2">
+<div class="bg-surface-container-low px-4 py-2 border-l-2 border-primary">
+<span class="block text-[10px] text-outline uppercase font-label tracking-tighter">INDEX_CAPACITY</span>
+<span class="text-xl font-bold font-headline">1.4M+</span>
+</div>
+<div class="bg-surface-container-low px-4 py-2 border-l-2 border-primary">
+<span class="block text-[10px] text-outline uppercase font-label tracking-tighter">QUERY_LATENCY</span>
+<span class="text-xl font-bold font-headline tracking-tighter">0.02MS</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Search & Filter Bar -->
+<div class="bg-surface-container-low p-4 mb-8 flex flex-wrap items-center gap-4">
+<div class="flex-1 min-w-[300px] relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface border-0 focus:ring-1 focus:ring-primary pl-10 pr-4 py-3 text-sm font-label uppercase tracking-wider placeholder:text-outline-variant" placeholder="QUERY_PHONEME_OR_STRING..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface-container-high px-4 py-3 text-[10px] font-bold tracking-widest uppercase hover:bg-primary hover:text-on-primary transition-colors">SORT: COMPLEXITY</button>
+<button class="bg-surface-container-high px-4 py-3 text-[10px] font-bold tracking-widest uppercase hover:bg-primary hover:text-on-primary transition-colors">FILTER: 4+ SYLLABLES</button>
+</div>
+</div>
+<!-- Rhyme Units Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-0.5 bg-outline-variant">
+<!-- Unit 01 -->
+<div class="bg-surface p-6 group cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-6">
+<span class="mono-tech text-[10px] text-outline">UNIT_ID: 0x4F2A</span>
+<span class="bg-primary text-on-primary px-2 py-0.5 text-[10px] font-black tracking-widest uppercase">TIER_S</span>
+</div>
+<h3 class="text-2xl font-black font-headline tracking-tight uppercase mb-4">Metaphysical</h3>
+<div class="space-y-4">
+<div class="flex gap-1">
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-outline-variant"></div>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">DENSITY</span>
+<span class="mono-tech text-sm">88%</span>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">SYLLABLES</span>
+<span class="mono-tech text-sm">05</span>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">COMPLEXITY</span>
+<span class="mono-tech text-sm">MAX</span>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-outline-variant/30">
+<div class="text-[10px] text-outline uppercase font-label mb-2">MULTISYLLABIC_MATCHES:</div>
+<div class="flex flex-wrap gap-2">
+<span class="mono-tech text-[11px] bg-surface-container-high px-2 py-1">Medical Digital</span>
+<span class="mono-tech text-[11px] bg-surface-container-high px-2 py-1">Never-revisable</span>
+</div>
+</div>
+</div>
+<!-- Unit 02 -->
+<div class="bg-surface p-6 group cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-6">
+<span class="mono-tech text-[10px] text-outline">UNIT_ID: 0x9B1C</span>
+<span class="bg-surface-container-highest text-on-surface px-2 py-0.5 text-[10px] font-black tracking-widest uppercase">TIER_A</span>
+</div>
+<h3 class="text-2xl font-black font-headline tracking-tight uppercase mb-4">Paradoxical</h3>
+<div class="space-y-4">
+<div class="flex gap-1">
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-outline-variant"></div>
+<div class="h-1 flex-1 bg-outline-variant"></div>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">DENSITY</span>
+<span class="mono-tech text-sm">74%</span>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">SYLLABLES</span>
+<span class="mono-tech text-sm">05</span>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">COMPLEXITY</span>
+<span class="mono-tech text-sm">HIGH</span>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-outline-variant/30">
+<div class="text-[10px] text-outline uppercase font-label mb-2">MULTISYLLABIC_MATCHES:</div>
+<div class="flex flex-wrap gap-2">
+<span class="mono-tech text-[11px] bg-surface-container-high px-2 py-1">Classical tactical</span>
+<span class="mono-tech text-[11px] bg-surface-container-high px-2 py-1">Practical radical</span>
+</div>
+</div>
+</div>
+<!-- Unit 03 -->
+<div class="bg-surface p-6 group cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-6">
+<span class="mono-tech text-[10px] text-outline">UNIT_ID: 0xEE4D</span>
+<span class="bg-primary text-on-primary px-2 py-0.5 text-[10px] font-black tracking-widest uppercase">TIER_S</span>
+</div>
+<h3 class="text-2xl font-black font-headline tracking-tight uppercase mb-4">Hallucination</h3>
+<div class="space-y-4">
+<div class="flex gap-1">
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">DENSITY</span>
+<span class="mono-tech text-sm">92%</span>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">SYLLABLES</span>
+<span class="mono-tech text-sm">05</span>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">COMPLEXITY</span>
+<span class="mono-tech text-sm">MAX</span>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-outline-variant/30">
+<div class="text-[10px] text-outline uppercase font-label mb-2">MULTISYLLABIC_MATCHES:</div>
+<div class="flex flex-wrap gap-2">
+<span class="mono-tech text-[11px] bg-surface-container-high px-2 py-1">Accumulation</span>
+<span class="mono-tech text-[11px] bg-surface-container-high px-2 py-1">Devaluation</span>
+</div>
+</div>
+</div>
+<!-- Unit 04 -->
+<div class="bg-surface p-6 group cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-6">
+<span class="mono-tech text-[10px] text-outline">UNIT_ID: 0xC1A2</span>
+<span class="bg-surface-container-highest text-on-surface px-2 py-0.5 text-[10px] font-black tracking-widest uppercase">TIER_B</span>
+</div>
+<h3 class="text-2xl font-black font-headline tracking-tight uppercase mb-4">Intermittent</h3>
+<div class="space-y-4">
+<div class="flex gap-1">
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-outline-variant"></div>
+<div class="h-1 flex-1 bg-outline-variant"></div>
+<div class="h-1 flex-1 bg-outline-variant"></div>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">DENSITY</span>
+<span class="mono-tech text-sm">56%</span>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">SYLLABLES</span>
+<span class="mono-tech text-sm">04</span>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">COMPLEXITY</span>
+<span class="mono-tech text-sm">MED</span>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-outline-variant/30">
+<div class="text-[10px] text-outline uppercase font-label mb-2">MULTISYLLABIC_MATCHES:</div>
+<div class="flex flex-wrap gap-2">
+<span class="mono-tech text-[11px] bg-surface-container-high px-2 py-1">Inner vision</span>
+<span class="mono-tech text-[11px] bg-surface-container-high px-2 py-1">Inhibit it</span>
+</div>
+</div>
+</div>
+<!-- Unit 05 -->
+<div class="bg-surface p-6 group cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-6">
+<span class="mono-tech text-[10px] text-outline">UNIT_ID: 0x8D32</span>
+<span class="bg-primary text-on-primary px-2 py-0.5 text-[10px] font-black tracking-widest uppercase">TIER_S</span>
+</div>
+<h3 class="text-2xl font-black font-headline tracking-tight uppercase mb-4">Catastrophic</h3>
+<div class="space-y-4">
+<div class="flex gap-1">
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-outline-variant"></div>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">DENSITY</span>
+<span class="mono-tech text-sm">82%</span>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">SYLLABLES</span>
+<span class="mono-tech text-sm">04</span>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">COMPLEXITY</span>
+<span class="mono-tech text-sm">MAX</span>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-outline-variant/30">
+<div class="text-[10px] text-outline uppercase font-label mb-2">MULTISYLLABIC_MATCHES:</div>
+<div class="flex flex-wrap gap-2">
+<span class="mono-tech text-[11px] bg-surface-container-high px-2 py-1">After shock</span>
+<span class="mono-tech text-[11px] bg-surface-container-high px-2 py-1">Master plot</span>
+</div>
+</div>
+</div>
+<!-- Unit 06 -->
+<div class="bg-surface p-6 group cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-6">
+<span class="mono-tech text-[10px] text-outline">UNIT_ID: 0xF1B7</span>
+<span class="bg-surface-container-highest text-on-surface px-2 py-0.5 text-[10px] font-black tracking-widest uppercase">TIER_A</span>
+</div>
+<h3 class="text-2xl font-black font-headline tracking-tight uppercase mb-4">Architecture</h3>
+<div class="space-y-4">
+<div class="flex gap-1">
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-primary"></div>
+<div class="h-1 flex-1 bg-outline-variant"></div>
+<div class="h-1 flex-1 bg-outline-variant"></div>
+</div>
+<div class="grid grid-cols-3 gap-2">
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">DENSITY</span>
+<span class="mono-tech text-sm">70%</span>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">SYLLABLES</span>
+<span class="mono-tech text-sm">04</span>
+</div>
+<div class="text-center">
+<span class="block text-[10px] text-outline uppercase font-label mb-1">COMPLEXITY</span>
+<span class="mono-tech text-sm">HIGH</span>
+</div>
+</div>
+</div>
+<div class="mt-6 pt-6 border-t border-outline-variant/30">
+<div class="text-[10px] text-outline uppercase font-label mb-2">MULTISYLLABIC_MATCHES:</div>
+<div class="flex flex-wrap gap-2">
+<span class="mono-tech text-[11px] bg-surface-container-high px-2 py-1">Darker picture</span>
+<span class="mono-tech text-[11px] bg-surface-container-high px-2 py-1">Sharpest fixture</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Phoneme Pattern Laboratory -->
+<section class="mt-20">
+<h2 class="text-2xl font-black font-headline tracking-tighter uppercase mb-8 border-l-4 border-primary pl-4">PHONETIC_FLOW_LAB</h2>
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+<div class="lg:col-span-3 bg-surface-container-low border border-outline-variant p-6">
+<div class="flex items-center justify-between mb-6">
+<div class="text-[10px] font-bold tracking-widest uppercase font-label">SYLLABLE_PATTERN_ANALYZER_V1</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 bg-primary"></span>
+<span class="text-[10px] mono-tech uppercase">STRESSED</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 border border-outline-variant"></span>
+<span class="text-[10px] mono-tech uppercase">UNSTRESSED</span>
+</div>
+</div>
+</div>
+<div class="flex gap-2 h-32 items-end mb-6 bg-surface p-4">
+<div class="w-full bg-primary h-[80%]"></div>
+<div class="w-full bg-outline-variant h-[30%]"></div>
+<div class="w-full bg-primary h-[95%]"></div>
+<div class="w-full bg-outline-variant h-[20%]"></div>
+<div class="w-full bg-primary h-[70%]"></div>
+<div class="w-full bg-primary h-[85%]"></div>
+<div class="w-full bg-outline-variant h-[40%]"></div>
+<div class="w-full bg-primary h-[100%]"></div>
+<div class="w-full bg-outline-variant h-[15%]"></div>
+<div class="w-full bg-primary h-[60%]"></div>
+<div class="w-full bg-outline-variant h-[25%]"></div>
+<div class="w-full bg-primary h-[90%]"></div>
+</div>
+<div class="text-xs font-label text-on-surface-variant leading-relaxed">
+                        CURRENT_PATTERN: [STRESS-UNSTRESS-STRESS] DETECTED AS <span class="text-primary underline">DACTYLIC_HEXAMETER</span> VARIATION. OPTIMAL FOR FAST-TWITCH VERBAL AGILITY.
+                    </div>
+</div>
+<div class="bg-surface-container-high p-6 flex flex-col justify-between border-t-4 border-primary">
+<div>
+<div class="text-[10px] font-black tracking-widest uppercase font-label mb-4">QUICK_GENERATOR</div>
+<p class="text-xs text-on-surface-variant mb-6 uppercase tracking-wider leading-tight">Generate a 4-bar scheme based on selected phonemes.</p>
+</div>
+<button class="w-full bg-primary text-on-primary py-4 text-xs font-black tracking-widest uppercase hover:invert transition-all">EXECUTE_PATCH</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Nav for Mobile -->
+<nav class="md:hidden fixed bottom-0 w-full bg-neutral-900 border-t border-neutral-800 flex justify-around items-center h-16 z-50">
+<a class="flex flex-col items-center justify-center gap-1 text-neutral-500" href="#">
+<span class="material-symbols-outlined">edit_note</span>
+<span class="text-[8px] font-bold">WRITER</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-neutral-500" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="text-[8px] font-bold">HISTORY</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-white" href="#">
+<span class="material-symbols-outlined">layers</span>
+<span class="text-[8px] font-bold">RHYME_DB</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-neutral-500" href="#">
+<span class="material-symbols-outlined">settings_input_component</span>
+<span class="text-[8px] font-bold">SETTINGS</span>
+</a>
+</nav>
+</body></html>
