@@ -178,6 +178,7 @@
         const IDENTITY_CORE = `Name: saveHXPE. Origin: Lesotho. Aesthetic: Brutalist. Technical: Multis, internal chains, high-velocity. Style: Lesotho outsider, melancholic, aggressive. Strategy: Cultural nods, isolation, sharp wording.`;
         const BASE_PROMPT = `Act as saveHXPE engine. Rewrite technically. 4-syllable multis at end. 2+ internal rhymes per bar. Wrap rhymes in [[ ]]. Output lyrics only.`;
 
+        let currentLoopId = 0;
         let state = {
             settings: { outsiderIntensity: 84, rhymeDensity: 70, localization: 'LESOTHO', apiKey: 'AIzaSyBUE54uPhtEo7FZ06bNQD4F0GOkvleRZ-g', bpm: 90 },
             history: [],
@@ -278,6 +279,7 @@
         }
 
         function renderOutput(text, typing = false) {
+            const loopId = ++currentLoopId;
             const div = $('output-lyrics'); div.innerHTML = '';
             const lines = text.split('\n');
             
@@ -287,12 +289,14 @@
 
             const display = async () => {
                 for (let line of lines) {
+                    if (loopId !== currentLoopId) return;
                     const l = document.createElement('div');
                     l.className = 'flow-line';
                     l.innerHTML = line.replace(/\[\[(.*?)\]\]/g, (m, p1) => `<span class="${Math.random() > 0.5 ? 'rhyme-highlight-1' : 'rhyme-highlight-2'}">${p1}</span>`);
                     div.appendChild(l);
                     if (typing) await new Promise(r => setTimeout(r, Math.random() * 50));
                 }
+                if (loopId !== currentLoopId) return;
                 const cur = document.createElement('span'); cur.className = 'blinking-cursor';
                 div.appendChild(cur);
             };
