@@ -8,548 +8,412 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <style>
-        body { background-color: #131313; color: #e2e2e2; font-family: 'Inter', sans-serif; }
+        body { background-color: #0A0A0A; color: #e2e2e2; font-family: 'Inter', sans-serif; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #0e0e0e; }
-        ::-webkit-scrollbar-thumb { background: #ffffff; }
+        ::-webkit-scrollbar { width: 2px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; }
         
-        /* Rhyme Highlighting System */
-        .rhyme-highlight-1 { color: #ffffff; font-weight: 700; text-shadow: 0 0 10px rgba(255,255,255,0.4); cursor: pointer; border-bottom: 2px solid white; padding: 0 1px; }
-        .rhyme-highlight-1:hover { background: white; color: black; text-shadow: none; }
-        .rhyme-highlight-2 { color: #aaaaaa; font-weight: 700; text-shadow: 0 0 6px rgba(255,255,255,0.2); cursor: pointer; border-bottom: 1px dashed #aaaaaa; }
-        .rhyme-highlight-2:hover { color: white; border-bottom-style: solid; }
-
-        .blinking-cursor { display: inline-block; width: 8px; height: 1.2em; background: #ffffff; margin-left: 2px; vertical-align: middle; animation: blink 1s step-end infinite; }
+        .rhyme-highlight-1 { color: #fff; font-weight: 700; border-bottom: 2px solid #fff; padding: 0 1px; transition: all 0.2s; }
+        .rhyme-highlight-1:hover { background: #fff; color: #000; }
+        .rhyme-highlight-2 { color: #888; font-weight: 700; border-bottom: 1px dashed #888; }
+        
+        .blinking-cursor { display: inline-block; width: 6px; height: 1.2em; background: #fff; margin-left: 2px; animation: blink 1s step-end infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; background: #353535; height: 2px; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; height: 12px; width: 12px; background: #ffffff; cursor: pointer; border-radius: 0; }
+        input[type=range] { appearance: none; width: 100%; background: #222; height: 1px; }
+        input[type=range]::-webkit-slider-thumb { appearance: none; height: 10px; width: 10px; background: #fff; cursor: pointer; border-radius: 0; }
 
-        .flow-line { position: relative; padding-left: 1rem; border-left: 2px solid transparent; margin-bottom: 0.5rem; transition: all 0.3s; }
-        .flow-active .flow-line { border-left-color: #ffffff; background: rgba(255,255,255,0.05); }
+        .panel-slide { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .panel-hidden { transform: translateX(100%); }
+        .panel-history-hidden { transform: translateX(-100%); }
 
-        .page-container { display: none; }
-        .page-container.active { display: flex; }
         .vertical-text { writing-mode: vertical-lr; transform: rotate(180deg); }
-
-        .btn-sidebar.active { background-color: white; color: black; }
-        .btn-sidebar:not(.active) { color: #C6C6C6; }
-        
         .loading-pulse { animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
 
-        .tag-aggressive { border: 1px solid #FF0000; color: #FF0000; }
-        .tag-emotional { border: 1px solid #00AAFF; color: #00AAFF; }
-        .tag-flex { border: 1px solid #AAFF00; color: #AAFF00; }
+        .flow-line { position: relative; padding-left: 1rem; border-left: 2px solid transparent; transition: all 0.3s; opacity: 1; }
+        .flow-active .flow-line { border-left-color: #fff; background: rgba(255,255,255,0.03); }
+        .perf-dim { opacity: 0.1; }
+        .perf-active { opacity: 1; background: rgba(255,255,255,0.05); border-left-color: #fff; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col overflow-hidden">
+<body class="min-h-screen flex flex-col overflow-hidden select-none">
 
-    <!-- TopAppBar -->
-    <header class="bg-[#1B1B1B] flex justify-between items-center w-full h-16 px-6 border-b border-outline-variant/10 z-20">
-        <div class="font-['Space_Grotesk'] font-bold tracking-tighter uppercase text-xl font-black tracking-widest text-white">
-            saveHXPE // LYRIC ENGINE
-        </div>
-        <div class="flex items-center space-x-4">
-            <button onclick="newSession()" class="text-[10px] font-black border border-white/20 px-4 py-2 hover:bg-white hover:text-black transition-all uppercase tracking-widest">NEW_SESSION</button>
-            <button onclick="copyOutput()" class="text-[10px] font-black bg-white text-black px-4 py-2 hover:bg-black hover:text-white transition-all uppercase tracking-widest">COPY_OUTPUT</button>
+    <!-- TOP BAR -->
+    <header class="h-14 border-b border-white/5 flex justify-between items-center px-6 z-50 bg-[#0A0A0A]">
+        <div class="font-['Space_Grotesk'] font-black text-lg tracking-[0.2em] uppercase">saveHXPE // LYRIC ENGINE</div>
+        <div class="flex items-center space-x-6">
+            <button onclick="togglePanel('history')" class="text-[10px] font-black tracking-widest uppercase hover:text-white text-gray-500 transition-all flex items-center">
+                <span class="material-symbols-outlined text-sm mr-2">history</span> ARCHIVE
+            </button>
+            <button onclick="togglePanel('settings')" class="text-[10px] font-black tracking-widest uppercase hover:text-white text-gray-500 transition-all flex items-center">
+                <span class="material-symbols-outlined text-sm mr-2">settings</span> CONFIG
+            </button>
         </div>
     </header>
 
-    <div class="flex flex-1 w-full relative">
-        <!-- SideNavBar -->
-        <nav class="fixed left-0 top-0 h-full flex flex-col items-center py-8 bg-[#0E0E0E] w-20 border-r border-outline-variant/10 z-30">
-            <div class="mb-12 flex flex-col items-center">
-                <span class="text-lg font-black font-['Space_Grotesk'] text-white">E_V3</span>
-                <span class="font-['Inter'] text-[8px] font-bold tracking-[0.05em] uppercase text-outline mt-1" id="engine-status">CONNECTED</span>
+    <!-- MAIN STUDIO -->
+    <main class="flex-1 flex relative overflow-hidden">
+        
+        <!-- HISTORY/RMD PANEL (LEFT SLIDE) -->
+        <aside id="panel-history" class="panel-slide panel-history-hidden absolute left-0 top-0 w-80 h-full bg-[#0F0F0F] border-r border-white/5 z-40 flex flex-col">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                <div class="flex space-x-6">
+                    <button id="tab-history" onclick="toggleSidebarTab('history')" class="text-[10px] font-black tracking-widest text-white uppercase">ARCHIVE</button>
+                    <button id="tab-rmd" onclick="toggleSidebarTab('rmd')" class="text-[10px] font-black tracking-widest text-gray-500 uppercase">RMD_DB</button>
+                </div>
+                <button onclick="togglePanel('history')" class="material-symbols-outlined text-sm">close</button>
             </div>
-            <div class="flex flex-col w-full space-y-4">
-                <button id="nav-library" onclick="switchPage('library')" class="btn-sidebar active p-4 w-full flex flex-col items-center justify-center transition-all">
-                    <span class="material-symbols-outlined mb-1">edit_note</span>
-                    <span class="font-['Inter'] text-[8px] font-bold tracking-[0.05em] uppercase text-center">STUDIO</span>
-                </button>
-                <button id="nav-history" onclick="switchPage('history')" class="btn-sidebar p-4 w-full flex flex-col items-center justify-center hover:text-white hover:bg-[#2A2A2A] transition-all">
-                    <span class="material-symbols-outlined mb-1">history</span>
-                    <span class="font-['Inter'] text-[8px] font-bold tracking-[0.05em] uppercase text-center">HISTORY</span>
-                </button>
-                <button id="nav-rmd" onclick="switchPage('rmd')" class="btn-sidebar p-4 w-full flex flex-col items-center justify-center hover:text-white hover:bg-[#2A2A2A] transition-all">
-                    <span class="material-symbols-outlined mb-1">cyclone</span>
-                    <span class="font-['Inter'] text-[8px] font-bold tracking-[0.05em] uppercase text-center">RHYME_DB</span>
-                </button>
-                <button id="nav-settings" onclick="switchPage('settings')" class="btn-sidebar p-4 w-full flex flex-col items-center justify-center hover:text-white hover:bg-[#2A2A2A] transition-all">
-                    <span class="material-symbols-outlined mb-1">settings</span>
-                    <span class="font-['Inter'] text-[8px] font-bold tracking-[0.05em] uppercase text-center">SETTINGS</span>
-                </button>
+            <div id="history-list" class="flex-1 overflow-y-auto p-4 space-y-2">
+                <!-- History Items -->
             </div>
-        </nav>
+            <div id="rmd-list" class="flex-1 overflow-y-auto p-4 space-y-2 hidden">
+                <!-- RMD Items -->
+            </div>
+        </aside>
 
-        <!-- Main Workspace -->
-        <main class="ml-20 flex-1 relative h-[calc(100vh-64px-32px)] overflow-hidden">
-            
-            <!-- LIBRARY PAGE -->
-            <div id="page-library" class="page-container active h-full grid grid-cols-1 md:grid-cols-[1.2fr_auto_1fr]">
-                <!-- LEFT COLUMN: INPUT -->
-                <section class="bg-[#131313] flex flex-col p-8 space-y-6 overflow-y-auto">
-                    <div class="flex flex-col h-1/2">
-                        <div class="flex justify-between items-end mb-4">
-                            <label class="font-label text-xs font-bold tracking-[0.05em] uppercase text-[#919191]">SESSION_ID: <span id="session-id">8281-X</span></label>
-                            <span class="font-label text-[10px] text-[#474747]" id="autosave-status">RAFT_AUTOSAVED</span>
-                        </div>
-                        <textarea id="input-lyrics" oninput="handleInput(this.value)" class="flex-1 bg-[#1B1B1B] p-6 text-on-surface font-body text-lg border-0 focus:ring-0 resize-none leading-relaxed placeholder:text-[#353535]" placeholder="ENTER RAW VERSE HERE..."></textarea>
+        <!-- SETTINGS PANEL (RIGHT SLIDE) -->
+        <aside id="panel-settings" class="panel-slide panel-hidden absolute right-0 top-0 w-80 h-full bg-[#0F0F0F] border-l border-white/5 z-40 flex flex-col">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                <span class="text-[10px] font-black tracking-widest uppercase">SYSTEM_CONFIG</span>
+                <button onclick="togglePanel('settings')" class="material-symbols-outlined text-sm">close</button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-8 space-y-10">
+                <div class="space-y-4">
+                    <label class="text-[9px] font-black tracking-widest text-gray-500 uppercase">API_KEY</label>
+                    <input type="password" id="api-key-input" placeholder="GEMINI_UPLINK_KEY" class="w-full bg-black border border-white/10 p-3 text-xs font-mono focus:border-white focus:ring-0" autocomplete="off" onchange="updateSetting('apiKey', this.value)">
+                </div>
+                <div class="space-y-4">
+                    <label class="flex justify-between text-[9px] font-black tracking-widest text-gray-500 uppercase">
+                        OUTSIDER_INTENSITY <span id="val-outsider" class="text-white">84</span>
+                    </label>
+                    <input id="range-outsider" type="range" max="100" min="0" value="84" oninput="updateSetting('outsiderIntensity', this.value)">
+                </div>
+                <div class="space-y-4">
+                    <label class="flex justify-between text-[9px] font-black tracking-widest text-gray-500 uppercase">
+                        RHYME_DENSITY <span id="val-rhyme" class="text-white">70</span>
+                    </label>
+                    <input id="range-rhyme" type="range" max="100" min="0" value="70" oninput="updateSetting('rhymeDensity', this.value)">
+                </div>
+                <div class="space-y-4">
+                    <label class="text-[9px] font-black tracking-widest text-gray-500 uppercase">LOCALIZATION</label>
+                    <div class="grid grid-cols-3 border border-white/10">
+                        <button onclick="updateSetting('localization', 'LESOTHO')" class="loc-btn py-2 text-[8px] font-black uppercase" data-loc="LESOTHO">LSO</button>
+                        <button onclick="updateSetting('localization', 'AFRICAN')" class="loc-btn py-2 text-[8px] font-black border-x border-white/10 uppercase" data-loc="AFRICAN">AFR</button>
+                        <button onclick="updateSetting('localization', 'GLOBAL')" class="loc-btn py-2 text-[8px] font-black uppercase" data-loc="GLOBAL">GLO</button>
                     </div>
-                    <!-- CONTROLS -->
-                    <div class="space-y-6">
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-end">
-                                <label class="font-label text-xs font-bold tracking-[0.05em] uppercase text-[#919191]">OUTSIDER_INTENSITY</label>
-                                <span class="font-label text-[10px] text-white" id="val-outsider">LEVEL: 84 / 100</span>
-                            </div>
-                            <div class="flex items-center space-x-4">
-                                <input id="range-outsider" class="flex-1" max="100" min="0" type="range" value="84" oninput="updateSetting('outsiderIntensity', this.value)"/>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-6">
-                            <div class="space-y-2">
-                                <label class="block font-label text-[10px] font-bold tracking-[0.05em] uppercase text-[#919191]">LOCALIZATION</label>
-                                <div id="localization-toggle" class="flex bg-[#1B1B1B] border border-[#474747]/10">
-                                    <button onclick="updateSetting('localization', 'LESOTHO')" class="loc-btn flex-1 py-2 text-[9px] font-bold bg-white text-black" data-loc="LESOTHO">LESOTHO</button>
-                                    <button onclick="updateSetting('localization', 'AFRICAN')" class="loc-btn flex-1 py-2 text-[9px] font-bold text-[#919191] hover:text-white" data-loc="AFRICAN">AFRICAN</button>
-                                    <button onclick="updateSetting('localization', 'GLOBAL')" class="loc-btn flex-1 py-2 text-[9px] font-bold text-[#919191] hover:text-white" data-loc="GLOBAL">GLOBAL</button>
-                                </div>
-                            </div>
-                            <div class="space-y-2">
-                                <label class="block font-label text-[10px] font-bold tracking-[0.05em] uppercase text-[#919191]">QUICK_ACTION</label>
-                                <button onclick="saveToRMD()" class="w-full bg-[#1B1B1B] border border-[#474747]/10 py-2 text-[9px] font-black hover:bg-white hover:text-black transition-all">EXTRACT_RMD_CHAIN</button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                </div>
+                <div class="pt-8 border-t border-white/5">
+                    <button onclick="clearState()" class="w-full border border-red-900/40 text-red-900 hover:text-red-500 hover:border-red-500 py-3 text-[9px] font-black transition-all">PURGE_DATA</button>
+                </div>
+            </div>
+        </aside>
 
-                <!-- CENTER: TRANSFORM -->
-                <section class="flex flex-col justify-center px-4 bg-[#0E0E0E] border-x border-[#474747]/10 relative z-10 space-y-4">
-                    <button id="btn-run-engine" onclick="runEngine()" class="group relative w-16 h-36 bg-white text-black flex items-center justify-center hover:bg-black hover:text-white transition-colors duration-150 border-y border-white">
-                        <span id="btn-text" class="font-headline font-black text-xl uppercase tracking-tighter vertical-text [writing-mode:vertical-lr] rotate-180">WRITE</span>
+        <!-- CORE CONTENT -->
+        <div class="flex-1 flex flex-col md:flex-row overflow-hidden bg-[#0A0A0A]">
+            <!-- INPUT AREA -->
+            <section class="flex-1 flex flex-col p-8 border-r border-white/5 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-[10px] font-black tracking-widest text-gray-600 uppercase">RAW_DATA_INPUT <span id="session-id-display" class="ml-2 text-white/20"></span></div>
+                    <button onclick="newSession()" class="text-[9px] font-black border border-white/10 px-3 py-1 hover:bg-white hover:text-black transition-all">NEW_START</button>
+                </div>
+                <textarea id="input-lyrics" oninput="handleInput(this.value)" class="flex-1 bg-transparent border-0 focus:ring-0 p-0 text-xl font-medium leading-relaxed placeholder:text-white/5 resize-none" placeholder="START WRITING OR PASTE DATA..."></textarea>
+                
+                <!-- Action Buttons Overlay -->
+                <div class="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col space-y-2 z-10 px-4">
+                    <button id="btn-write" onclick="runEngine()" class="w-14 h-48 bg-white text-black flex items-center justify-center hover:bg-gray-200 transition-all font-black group">
+                        <span id="btn-write-text" class="vertical-text">WRITE</span>
                     </button>
-                    <button id="btn-refine" onclick="refineLyrics()" class="group relative w-16 h-36 bg-[#1B1B1B] text-[#919191] flex items-center justify-center hover:bg-white hover:text-black transition-colors duration-150 border-y border-white/20">
-                        <span id="btn-refine-text" class="font-headline font-black text-xl uppercase tracking-tighter vertical-text [writing-mode:vertical-lr] rotate-180">REFINE</span>
+                    <button id="btn-refine" onclick="refineLyrics()" class="w-14 h-48 bg-black border border-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black transition-all font-black group">
+                        <span id="btn-refine-text" class="vertical-text">REFINE</span>
                     </button>
-                </section>
-
-                <!-- RIGHT COLUMN: OUTPUT -->
-                <section class="bg-[#1B1B1B] flex flex-col p-8 space-y-6 relative overflow-hidden">
-                    <div class="flex flex-col flex-1 min-h-0">
-                        <div class="flex justify-between items-start mb-6">
-                            <div class="flex flex-col space-y-1">
-                                <label class="font-label text-xs font-bold tracking-[0.05em] uppercase text-white">ELEVATED_LYRICS.EXE</label>
-                                <div id="version-stack" class="flex space-x-2 mt-2">
-                                    <!-- Version buttons injector -->
-                                </div>
-                            </div>
-                            <div class="flex space-x-2">
-                                <button onclick="togglePerformance()" id="btn-performance" class="text-[8px] border border-white/20 text-white px-3 py-1 hover:bg-white hover:text-black font-black uppercase tracking-widest">PERFORMANCE_OFF</button>
-                                <div class="flex items-center bg-black/40 border border-white/10 px-2">
-                                    <span class="text-[8px] font-black mr-2 opacity-50">BPM</span>
-                                    <input type="number" id="bpm-input" value="90" min="60" max="180" class="bg-transparent border-0 w-8 p-0 text-[10px] font-black focus:ring-0" onchange="updateSetting('bpm', this.value)">
-                                </div>
-                            </div>
-                        </div>
-                        <div id="output-lyrics" class="flex-1 bg-[#131313] p-8 font-body text-lg leading-loose overflow-y-auto whitespace-pre-wrap relative border border-[#474747]/10 flow-active">
-                             <div class="text-[#353535] italic">ENGINE IDLE. WRITE TEXT TO BEGIN.</div>
-                        </div>
-                        <!-- Rhyme Harvest Suggestion -->
-                        <div id="harvest-panel" class="hidden absolute bottom-8 left-8 right-8 bg-white text-black p-4 flex justify-between items-center shadow-2xl z-20">
-                            <div class="flex flex-col">
-                                <span class="text-[8px] font-black uppercase tracking-widest opacity-50">RHYME_HARVESTER</span>
-                                <span class="text-xs font-bold" id="harvest-chain-text">...</span>
-                            </div>
-                            <button onclick="acceptHarvest()" class="bg-black text-white px-4 py-2 text-[10px] font-black uppercase tracking-tighter hover:bg-white hover:text-black border border-black group transition-all">SAVE_TO_RMD</button>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-            <!-- HISTORY -->
-            <div id="page-history" class="page-container h-full flex flex-col p-12 overflow-y-auto bg-[#131313]">
-                <div class="flex justify-between items-end mb-12 border-b border-white/10 pb-4">
-                    <h2 class="font-headline text-4xl font-black uppercase tracking-widest">THE_ARCHIVE</h2>
-                    <span class="text-[10px] text-[#474747] font-black uppercase">PERSISTENT_STORAGE_ACTIVE</span>
                 </div>
-                <div id="history-list" class="grid grid-cols-1 gap-4"></div>
-            </div>
+            </section>
 
-            <!-- RMD DATABASE -->
-            <div id="page-rmd" class="page-container h-full flex flex-col p-12 overflow-y-auto bg-[#131313]">
-                <div class="flex justify-between items-end mb-12 border-b border-white/10 pb-4">
-                    <h2 class="font-headline text-4xl font-black uppercase tracking-widest">RHYME_MEMORY_DATA</h2>
-                    <span class="text-[10px] text-[#474747] font-black uppercase">REUSABLE_STRUCTURES</span>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="rmd-list"></div>
-            </div>
-
-            <!-- SETTINGS -->
-            <div id="page-settings" class="page-container h-full flex flex-col p-12 overflow-y-auto bg-[#131313]">
-                <h2 class="font-headline text-4xl font-black uppercase mb-12">SYSTEM_CONFIG</h2>
-                <div class="max-w-2xl space-y-12">
-                    <div class="space-y-4">
-                        <label class="block font-label text-sm font-bold uppercase tracking-widest text-[#919191]">API_KEY (GEMINI_PROVIDER)</label>
-                        <input type="password" id="api-key-input" placeholder="ENTER_ENCRYPTED_KEY" class="w-full bg-[#1B1B1B] border-[#474747]/10 text-white p-4 font-mono text-sm focus:ring-0 focus:border-white" onchange="updateSetting('apiKey', this.value)">
+            <!-- OUTPUT AREA -->
+            <section class="flex-1 flex flex-col bg-[#0F0F0F] relative overflow-hidden">
+                <div class="flex justify-between items-center p-6 border-b border-white/5 bg-[#0F0F0F] z-10">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-black tracking-widest uppercase">ELEVATED_OUTPUT</span>
+                        <div id="version-stack" class="flex space-x-1 mt-2"></div>
                     </div>
-                    <div class="space-y-4">
-                        <label class="block font-label text-sm font-bold uppercase tracking-widest text-[#919191]">RHYME_DENSITY_TARGET</label>
-                        <input type="range" id="range-rhyme" max="100" min="0" value="70" oninput="updateSetting('rhymeDensity', this.value)">
-                        <div class="flex justify-between text-[10px] font-black text-white"><span>LINEAR</span><span id="val-rhyme">70</span><span>MAX_MULTIS</span></div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center bg-black border border-white/5 px-3 py-1">
+                            <span class="text-[8px] font-black mr-2 opacity-30">BPM</span>
+                            <input type="number" id="bpm-input" value="90" class="bg-transparent border-0 w-8 p-0 text-[10px] font-black focus:ring-0" onchange="updateSetting('bpm', this.value)">
+                        </div>
+                        <button onclick="togglePerformance()" id="btn-perf" class="text-[9px] font-black border border-white/10 px-4 py-1.5 hover:bg-white hover:text-black transition-all uppercase">PERFORMANCE_OFF</button>
                     </div>
-                    <button onclick="clearState()" class="border border-red-500/50 text-red-500 text-[10px] font-black px-6 py-3 hover:bg-red-500 hover:text-white transition-all uppercase">PURGE_SYSTEM_CACHE</button>
                 </div>
-            </div>
-
-        </main>
-    </div>
-
-    <!-- Status Bar -->
-    <footer class="h-8 bg-[#0E0E0E] flex items-center px-6 justify-between border-t border-outline-variant/20 z-40">
-        <div class="flex items-center space-x-6">
-            <div class="flex items-center space-x-2"><div id="status-box" class="w-1.5 h-1.5 bg-white animate-pulse"></div><span class="font-label text-[9px] uppercase tracking-widest text-[#919191]" id="status-text">SYSTEM_CONNECTED</span></div>
-            <span class="font-label text-[9px] uppercase tracking-widest text-[#474747]">ID: <span id="footer-session">0000-0</span></span>
+                <div id="output-lyrics" class="flex-1 p-10 overflow-y-auto text-xl leading-relaxed whitespace-pre-wrap font-medium">
+                    <div class="text-white/5 italic">FEED SYSTEM DATA TO BEGIN_</div>
+                </div>
+                
+                <!-- Rhyme Harvester Slide -->
+                <div id="harvest-panel" class="hidden absolute bottom-6 left-6 right-6 bg-white text-black p-4 flex justify-between items-center shadow-2xl z-30 slide-up">
+                    <div class="flex flex-col overflow-hidden">
+                        <span class="text-[8px] font-black uppercase opacity-40">HARVEST_CHAIN_DETECTED</span>
+                        <span id="harvest-chain-text" class="text-sm font-bold truncate">...</span>
+                    </div>
+                    <button onclick="acceptHarvest()" class="bg-black text-white px-4 py-2 text-[10px] font-black uppercase tracking-tighter hover:bg-white hover:text-black border border-black transition-all">SAVE_TO_RMD</button>
+                </div>
+            </section>
         </div>
-        <div class="flex items-center space-x-4"><span class="font-label text-[9px] uppercase tracking-widest text-[#919191]">SESSION_LOC: MASERU_UPLINK</span><span class="font-label text-[9px] uppercase tracking-widest text-primary" id="time-display">00:00:00</span></div>
+    </main>
+
+    <!-- FOOTER STATUS -->
+    <footer class="h-8 border-t border-white/5 bg-[#0A0A0A] flex items-center justify-between px-6 z-50">
+        <div class="flex items-center space-x-6">
+            <div class="flex items-center space-x-2"><div id="status-pixel" class="w-1.5 h-1.5 bg-white"></div><span id="status-text" class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-500">SYSTEM_CONNECTED</span></div>
+            <span class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-700">SES_ID: <span id="footer-sid">----</span></span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-700">LOCALE: LESOTHO_UPLINK</span>
+            <span id="time-display" class="text-[8px] font-black tracking-[0.2em] uppercase text-white">00:00:00</span>
+        </div>
     </footer>
 
-    <script>
-        const IDENTITY_CORE = `Name: saveHXPE. Origin: Lesotho. Aesthetic: Brutalist-minimal. Technical Focus: Multisyllabic rhyme schemes, internal rhyme chains, high-velocity cadence. Tone: Melancholic but technically aggressive. Strategy: Use Lesotho/South Sotho cultural nods (landscape, mountain energy, isolation).`;
-        const BASE_PROMPT = `Act as the saveHXPE // LYRIC ENGINE. Analyze the input. Rewrite into technical rap verses. 
-CONSTRAINT: 4-syllable multisyllabic rhymes at line-end. 
-CONSTRAINT: At least two internal rhymes per bar. 
-STYLE: Raw Lesotho outsider. Melancholic yet aggressive.
-FORMAT: Wrap rhyming syllables in [[ ]] for engine.
-INPUT: [USER_LYRIC]
-OUTPUT: Refined technical lyrics only.`;
+    <script shadow>
+        const IDENTITY_CORE = `Name: saveHXPE. Origin: Lesotho. Aesthetic: Brutalist. Technical: Multis, internal chains, high-velocity. Style: Lesotho outsider, melancholic, aggressive. Strategy: Cultural nods, isolation, sharp wording.`;
+        const BASE_PROMPT = `Act as saveHXPE engine. Rewrite technically. 4-syllable multis at end. 2+ internal rhymes per bar. Wrap rhymes in [[ ]]. Output lyrics only.`;
 
         let state = {
-            currentPage: 'library',
+            settings: { outsiderIntensity: 84, rhymeDensity: 70, localization: 'LESOTHO', apiKey: 'AIzaSyBUE54uPhtEo7FZ06bNQD4F0GOkvleRZ-g', bpm: 90 },
             history: [],
-            settings: { outsiderIntensity: 84, rhymeDensity: 70, localization: 'LESOTHO', apiKey: '', bpm: 90 },
-            rmdDatabase: [],
+            rmd: [],
             currentInput: '',
             currentOutput: '',
-            currentVersions: [], // { text, timestamp }
-            performance: { active: false, timer: null, currentLine: -1 },
-            sessionId: Math.random().toString(36).substring(7).toUpperCase()
+            versions: [],
+            sessionId: Math.random().toString(36).slice(2, 8).toUpperCase(),
+            perf: { active: false, timer: null }
         };
 
+        const $ = id => document.getElementById(id);
+
         function init() {
-            const savedState = localStorage.getItem('saveHXPE_v4');
-            if (savedState) {
-                // Merge saved state with defaults to avoid breakages on schema updates
-                state = { ...state, ...JSON.parse(savedState) };
-            }
-            document.getElementById('input-lyrics').value = state.currentInput || '';
-            document.getElementById('session-id').innerText = state.sessionId;
-            document.getElementById('footer-session').innerText = state.sessionId;
+            const saved = localStorage.getItem('saveHXPE_V5');
+            if (saved) state = { ...state, ...JSON.parse(saved) };
+            
+            $('input-lyrics').value = state.currentInput || '';
+            $('session-id-display').innerText = state.sessionId;
+            $('footer-sid').innerText = state.sessionId;
+            
             if (state.currentOutput) {
-                renderOutputWithTyping(state.currentOutput);
-                updateVersionStack();
+                renderOutput(state.currentOutput);
+                updateVersions();
             }
-            applySettingsToUI();
-            renderCurrentPage();
-            updateSidebarVisuals();
+            
+            applySettings();
             startTime();
+            renderHistory();
+            renderRMD();
         }
 
-        function handleInput(val) {
-            state.currentInput = val;
-            document.getElementById('autosave-status').innerText = '...';
-            setTimeout(() => {
-                document.getElementById('autosave-status').innerText = 'RAFT_AUTOSAVED';
-                saveState();
-            }, 500);
+        function handleInput(v) { state.currentInput = v; save(); }
+
+        function togglePanel(id) {
+            const p = $('panel-' + id);
+            const isRef = id === 'history';
+            if (isRef) p.classList.toggle('panel-history-hidden');
+            else p.classList.toggle('panel-hidden');
         }
 
-        function newSession() {
-            if (confirm("START NEW SESSION? CURRENT DRAFT WILL BE STORED IN HISTORY.")) {
-                state.currentInput = '';
-                state.currentOutput = '';
-                state.sessionId = Math.random().toString(36).substring(7).toUpperCase();
-                document.getElementById('input-lyrics').value = '';
-                document.getElementById('output-lyrics').innerHTML = '<div class="text-[#353535] italic">ENGINE IDLE. WRITE TEXT TO BEGIN.</div>';
-                document.getElementById('session-id').innerText = state.sessionId;
-                saveState();
+        function toggleSidebarTab(tab) {
+            const h = $('history-list');
+            const r = $('rmd-list');
+            const bh = $('tab-history');
+            const br = $('tab-rmd');
+            if (tab === 'history') {
+                h.classList.remove('hidden'); r.classList.add('hidden');
+                bh.classList.add('text-white'); bh.classList.remove('text-gray-500');
+                br.classList.add('text-gray-500'); br.classList.remove('text-white');
+            } else {
+                r.classList.remove('hidden'); h.classList.add('hidden');
+                br.classList.add('text-white'); br.classList.remove('text-gray-500');
+                bh.classList.add('text-gray-500'); bh.classList.remove('text-white');
             }
-        }
-
-        function copyOutput() {
-            if (!state.currentOutput) return;
-            const plainText = state.currentOutput.replace(/<[^>]*>/g, '').replace(/\[\[|\]\]/g, '');
-            navigator.clipboard.writeText(plainText).then(() => {
-                alert("COPIED_TO_CLIPBOARD");
-            });
+            renderHistory();
+            renderRMD();
         }
 
         async function runEngine() {
-            const input = document.getElementById('input-lyrics').value;
-            if (!input.trim()) return;
-            if (!state.settings.apiKey) { alert("ENTER API_KEY IN SETTINGS"); switchPage('settings'); return; }
-
-            setEngineLoading(true);
+            const input = $('input-lyrics').value;
+            if (!input.trim() || !state.settings.apiKey) return alert("UPLINK KEY REQUIRED");
+            setLoading(true, 'write');
             try {
-                const prompt = `IDENTITY:\n${IDENTITY_CORE}\n\nSETTINGS:\nIntensity: ${state.settings.outsiderIntensity}\nLoc: ${state.settings.localization}\n\nINSTRUCTIONS:\n${BASE_PROMPT.replace('[USER_LYRIC]', input)}`;
-                const output = await callAI(prompt);
-                
-                state.currentVersions = [{ text: output, timestamp: new Date().toLocaleTimeString() }];
-                state.currentOutput = output;
-                
-                await renderOutputWithTyping(output);
-                archiveSession(input, output);
-                updateVersionStack();
-                saveState();
-            } catch (error) {
-                renderOutput("<div class='text-red-500 uppercase font-black'>ERR_CONNECTION_REFUSED: CHECK API_KEY</div>");
-            } finally { setEngineLoading(false); }
+                const prompt = `${IDENTITY_CORE}\nSettings: ${JSON.stringify(state.settings)}\n${BASE_PROMPT}\nInput: ${input}`;
+                const out = await callAI(prompt);
+                state.versions = [{ text: out, time: new Date().toLocaleTimeString() }];
+                state.currentOutput = out;
+                state.history.unshift({ input, output: out, time: new Date().toLocaleString(), sid: state.sessionId });
+                renderOutput(out, true);
+                updateVersions();
+                renderHistory();
+                save();
+            } catch (e) { renderOutput("ERR_LINK_FAILED"); }
+            finally { setLoading(false, 'write'); }
         }
 
         async function refineLyrics() {
-            if (!state.currentOutput) return;
-            if (!state.settings.apiKey) { alert("ENTER API_KEY IN SETTINGS"); switchPage('settings'); return; }
-
-            setEngineLoading(true, 'refine');
+            if (!state.currentOutput || !state.settings.apiKey) return alert("NO DATA OR KEY");
+            setLoading(true, 'refine');
             try {
-                const prompt = `IDENTITY:\n${IDENTITY_CORE}\n\nSETTINGS:\nIntensity: ${state.settings.outsiderIntensity}\nLoc: ${state.settings.localization}\n\nINSTRUCTIONS:\nDo not rewrite completely. Enhance the existing lines with more technical rhyme patterns and sharper wording. Improve rhyme density, internal rhymes, and word sharpness while maintaining the same meaning, structure, and cadence. Wrap rhyming syllables in [[ ]].\n\nINPUT:\n${state.currentOutput}`;
-                const output = await callAI(prompt);
-                
-                state.currentVersions.push({ text: output, timestamp: new Date().toLocaleTimeString() });
-                state.currentOutput = output;
-                
-                await renderOutputWithTyping(output);
-                updateVersionStack();
-                saveState();
-            } catch (error) {
-                renderOutput("<div class='text-red-500 uppercase font-black'>ERR_REFINE_FAILED</div>");
-            } finally { setEngineLoading(false, 'refine'); }
+                const prompt = `${IDENTITY_CORE}\nSettings: ${JSON.stringify(state.settings)}\nRefine instruction: Technical enhancement, keep core meaning. Multis. Internal chains.\nInput: ${state.currentOutput}`;
+                const out = await callAI(prompt);
+                state.versions.push({ text: out, time: new Date().toLocaleTimeString() });
+                state.currentOutput = out;
+                renderOutput(out, true);
+                updateVersions();
+                save();
+            } catch (e) { renderOutput("ERR_REFINE_FAILED"); }
+            finally { setLoading(false, 'refine'); }
         }
 
-        async function callAI(prompt) {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.settings.apiKey}`, {
-                method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+        async function callAI(p) {
+            const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${state.settings.apiKey}`, {
+                method: "POST", body: JSON.stringify({ contents: [{ parts: [{ text: p }] }] })
             });
-            if (!res.ok) throw new Error();
-            const data = await res.json();
-            return data.candidates[0].content.parts[0].text;
+            const d = await r.json(); return d.candidates[0].content.parts[0].text;
         }
 
-        function archiveSession(input, output) {
-            state.history.unshift({
-                input: input,
-                output: output,
-                preview: output.split('\n')[0].replace(/\[\[|\]\]/g, ''),
-                timestamp: new Date().toLocaleTimeString() + ' // ' + new Date().toLocaleDateString(),
-                session: state.sessionId
-            });
-        }
-
-        function updateVersionStack() {
-            const stack = document.getElementById('version-stack');
-            stack.innerHTML = '';
-            state.currentVersions.forEach((v, i) => {
-                const btn = document.createElement('button');
-                btn.className = `text-[10px] font-black px-3 py-1 border ${state.currentOutput === v.text ? 'bg-white text-black border-white' : 'border-white/20 text-white/40 hover:text-white'} transition-all uppercase`;
-                btn.innerText = `V${i + 1}`;
-                btn.onclick = () => {
-                   state.currentOutput = v.text;
-                   renderOutputWithTyping(v.text);
-                   updateVersionStack();
-                };
-                stack.appendChild(btn);
-            });
-        }
-
-        function renderOutputWithTyping(text) {
-            const div = document.getElementById('output-lyrics');
-            div.innerHTML = '';
+        function renderOutput(text, typing = false) {
+            const div = $('output-lyrics'); div.innerHTML = '';
             const lines = text.split('\n');
             
-            // Check for rhymes to harvest
+            // Check for harvesting
             const matches = text.match(/\[\[(.*?)\]\]/g);
-            if (matches && matches.length > 2) {
-                const chain = matches.map(m => m.replace(/[\[\]]/g, '')).slice(0, 4).join(' / ');
-                showHarvestPanel(chain);
-            }
+            if (matches && matches.length > 1) showHarvest(matches[0].replace(/[\[\]]/g,'') + ' / ' + matches[1].replace(/[\[\]]/g,''));
 
-            const p = async () => {
+            const display = async () => {
                 for (let line of lines) {
                     const l = document.createElement('div');
-                    l.className = 'flow-line opacity-0';
+                    l.className = 'flow-line';
                     l.innerHTML = line.replace(/\[\[(.*?)\]\]/g, (m, p1) => `<span class="${Math.random() > 0.5 ? 'rhyme-highlight-1' : 'rhyme-highlight-2'}">${p1}</span>`);
                     div.appendChild(l);
-                    await new Promise(r => setTimeout(r, 60));
-                    l.classList.remove('opacity-0');
-                    if (state.performance.active) {
-                        // In performance mode, we handle visibility differently later
-                    }
+                    if (typing) await new Promise(r => setTimeout(r, Math.random() * 50));
                 }
-                div.innerHTML += '<span class="blinking-cursor"></span>';
+                const cur = document.createElement('span'); cur.className = 'blinking-cursor';
+                div.appendChild(cur);
             };
-            return p();
+            display();
         }
 
-        function showHarvestPanel(chain) {
-            document.getElementById('harvest-chain-text').innerText = chain + "...";
-            document.getElementById('harvest-panel').classList.remove('hidden');
-            setTimeout(() => document.getElementById('harvest-panel').classList.add('hidden'), 8000);
+        function updateVersions() {
+            const v = $('version-stack'); v.innerHTML = '';
+            state.versions.forEach((ver, i) => {
+                const b = document.createElement('button');
+                b.className = `w-6 h-6 text-[8px] font-black border ${state.currentOutput === ver.text ? 'bg-white text-black border-white' : 'border-white/10 text-white/20 hover:text-white'}`;
+                b.innerText = `V${i + 1}`;
+                b.onclick = () => { state.currentOutput = ver.text; renderOutput(ver.text); updateVersions(); };
+                v.appendChild(b);
+            });
+        }
+
+        function showHarvest(chain) {
+            $('harvest-chain-text').innerText = chain;
+            $('harvest-panel').classList.remove('hidden');
+            setTimeout(() => $('harvest-panel').classList.add('hidden'), 8000);
         }
 
         function acceptHarvest() {
-            const chainText = document.getElementById('harvest-chain-text').innerText.replace('...', '');
-            saveToRMD('auto_harvest');
-            document.getElementById('harvest-panel').classList.add('hidden');
+            const chain = $('harvest-chain-text').innerText;
+            if (!state.rmd.find(r => r.chain === chain)) {
+                state.rmd.unshift({ chain, time: Date.now() });
+                save();
+                renderRMD();
+            }
+            $('harvest-panel').classList.add('hidden');
         }
 
         function togglePerformance() {
-            state.performance.active = !state.performance.active;
-            const btn = document.getElementById('btn-performance');
-            if (state.performance.active) {
-                btn.classList.add('bg-white', 'text-black');
-                btn.innerText = 'PERFORMANCE_ON';
-                startPerformance();
-            } else {
-                btn.classList.remove('bg-white', 'text-black');
-                btn.innerText = 'PERFORMANCE_OFF';
-                stopPerformance();
-            }
+            if (state.perf.active) stopPerf();
+            else startPerf();
         }
 
-        function startPerformance() {
-            const div = document.getElementById('output-lyrics');
-            const lines = div.querySelectorAll('.flow-line');
-            if (lines.length === 0) return;
-
-            lines.forEach(l => {
-                l.classList.add('opacity-10');
-                l.classList.remove('flow-active');
-            });
-
-            let currentLine = 0;
-            const msPerBeat = 60000 / state.settings.bpm;
-            const msPerBar = msPerBeat * 4; // Assuming 4/4 time
-
-            state.performance.timer = setInterval(() => {
-                if (currentLine >= lines.length) {
-                    stopPerformance();
-                    return;
-                }
-                
-                if (currentLine > 0) {
-                    lines[currentLine - 1].classList.remove('flow-active', 'bg-white/5');
-                    lines[currentLine - 1].classList.add('opacity-20');
-                }
-                
-                lines[currentLine].classList.add('flow-active', 'bg-white/5');
-                lines[currentLine].classList.remove('opacity-10', 'opacity-20');
-                lines[currentLine].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
-                currentLine++;
-            }, msPerBar);
-        }
-
-        function stopPerformance() {
-            clearInterval(state.performance.timer);
-            state.performance.active = false;
-            const btn = document.getElementById('btn-performance');
-            btn.classList.remove('bg-white', 'text-black');
-            btn.innerText = 'PERFORMANCE_OFF';
+        function startPerf() {
+            const lines = $('output-lyrics').querySelectorAll('.flow-line');
+            if (!lines.length) return;
+            state.perf.active = true;
+            const b = $('btn-perf');
+            b.innerText = 'PERFORMANCE_ON'; b.classList.add('bg-white', 'text-black');
             
-            const div = document.getElementById('output-lyrics');
-            const lines = div.querySelectorAll('.flow-line');
-            lines.forEach(l => {
-                l.classList.remove('opacity-10', 'opacity-20', 'flow-active', 'bg-white/5');
-                l.classList.add('opacity-100');
-            });
+            lines.forEach(l => l.classList.add('perf-dim'));
+            let cur = 0;
+            const ms = (60000 / state.settings.bpm) * 4; // 1 bar at 4/4
+            state.perf.timer = setInterval(() => {
+                if (cur >= lines.length) return stopPerf();
+                if (cur > 0) lines[cur-1].classList.replace('perf-active', 'perf-dim');
+                lines[cur].classList.replace('perf-dim', 'perf-active');
+                lines[cur].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                cur++;
+            }, ms);
         }
 
-        function saveToRMD(tag = 'aggressive') {
-            if (!state.currentOutput) return;
-            const matches = state.currentOutput.match(/\[\[(.*?)\]\]/g);
-            if (!matches) return;
-            const chain = matches.map(m => m.replace(/[\[\]]/g, '')).join(' / ');
-            state.rmdDatabase.unshift({ id: Date.now(), title: "CHAIN_" + new Date().getTime().toString().slice(-4), chain, tag });
-            saveState();
-            if (state.currentPage === 'rmd') renderRMD();
-            alert(`CHAIN SAVED TO RMD [${tag.toUpperCase()}]`);
+        function stopPerf() {
+            clearInterval(state.perf.timer);
+            state.perf.active = false;
+            const b = $('btn-perf');
+            b.innerText = 'PERFORMANCE_OFF'; b.classList.remove('bg-white', 'text-black');
+            $('output-lyrics').querySelectorAll('.flow-line').forEach(l => {
+                l.classList.remove('perf-dim', 'perf-active');
+            });
         }
 
         function renderHistory() {
-            const list = document.getElementById('history-list');
-            list.innerHTML = state.history.length === 0 ? '<div class="text-[#353535] italic">NO_DATA_ARCHIVED</div>' : '';
-            state.history.forEach((h, i) => {
-                const el = document.createElement('div');
-                el.className = 'bg-[#1B1B1B] p-6 border border-white/5 hover:border-white transition-all cursor-pointer flex justify-between items-center group';
-                el.onclick = () => { state.currentInput = h.input; state.currentOutput = h.output; document.getElementById('input-lyrics').value = h.input; renderOutput(h.output); switchPage('library'); };
-                el.innerHTML = `<div><div class="text-[9px] text-[#474747] mb-2 uppercase font-black">${h.timestamp} // SID: ${h.session}</div><div class="text-white font-bold">${h.preview}</div></div><span class="material-symbols-outlined opacity-0 group-hover:opacity-100">arrow_forward</span>`;
-                list.appendChild(el);
+            const l = $('history-list'); l.innerHTML = '';
+            state.history.forEach(h => {
+                const d = document.createElement('div');
+                d.className = 'p-4 bg-white/5 border border-white/0 hover:border-white/10 transition-all cursor-pointer group';
+                d.onclick = () => { $('input-lyrics').value = h.input; state.currentInput = h.input; state.currentOutput = h.output; renderOutput(h.output); togglePanel('history'); };
+                d.innerHTML = `<div class="text-[8px] font-black opacity-30 mb-1">${h.time}</div><div class="text-xs font-bold truncate">${h.output.split('\n')[0].replace(/\[\[|\]\]/g,'')}</div>`;
+                l.appendChild(d);
             });
+            if (!state.history.length) l.innerHTML = '<div class="text-[10px] font-black p-4 text-center opacity-20 uppercase">NO_SESSIONS</div>';
         }
 
         function renderRMD() {
-            const list = document.getElementById('rmd-list');
-            list.innerHTML = state.rmdDatabase.length === 0 ? '<div class="text-[#353535] italic">NO_CHAINS_STORED</div>' : '';
-            state.rmdDatabase.forEach(item => {
-                const el = document.createElement('div');
-                el.className = 'bg-[#1B1B1B] p-6 border border-white/5 flex flex-col space-y-4';
-                el.innerHTML = `<div class="flex justify-between items-center"><span class="px-2 py-0.5 text-[8px] font-black uppercase tag-${item.tag}">${item.tag}</span><button onclick="reuseRMD('${item.chain}')" class="text-[8px] font-black border border-white/20 px-2 py-1 hover:bg-white hover:text-black">USE_CHAIN</button></div><div class="text-[10px] font-mono text-[#919191]">${item.chain}</div>`;
-                list.appendChild(el);
+            const l = $('rmd-list'); l.innerHTML = '';
+            state.rmd.forEach(r => {
+                const d = document.createElement('div');
+                d.className = 'p-4 bg-white/5 border border-white/0 hover:border-white/10 transition-all cursor-pointer group flex justify-between items-center';
+                d.onclick = () => { 
+                    const ta = $('input-lyrics');
+                    ta.value += (ta.value ? '\n' : '') + r.chain; 
+                    state.currentInput = ta.value; 
+                    save(); 
+                };
+                d.innerHTML = `<div class="text-xs font-bold truncate pr-4">${r.chain}</div><span class="material-symbols-outlined text-xs opacity-20 group-hover:opacity-100">add</span>`;
+                l.appendChild(d);
             });
+            if (!state.rmd.length) l.innerHTML = '<div class="text-[10px] font-black p-4 text-center opacity-20 uppercase">EMPTY_RESERVOIR</div>';
         }
 
-        function reuseRMD(chain) {
-            const input = document.getElementById('input-lyrics');
-            input.value += (input.value ? '\n' : '') + "// RH_CHAIN: " + chain;
-            handleInput(input.value);
-            switchPage('library');
-        }
-
-        function switchPage(p) { state.currentPage = p; renderCurrentPage(); updateSidebarVisuals(); saveState(); }
-        function renderCurrentPage() {
-            document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
-            document.getElementById(`page-${state.currentPage}`).classList.add('active');
-            if (state.currentPage === 'history') renderHistory();
-            if (state.currentPage === 'rmd') renderRMD();
-        }
-        function updateSidebarVisuals() { document.querySelectorAll('.btn-sidebar').forEach(b => b.classList.toggle('active', b.id === `nav-${state.currentPage}`)); }
-        function updateSetting(k, v) { state.settings[k] = v; applySettingsToUI(); saveState(); }
-        function applySettingsToUI() {
-            document.getElementById('range-outsider').value = state.settings.outsiderIntensity;
-            document.getElementById('val-outsider').innerText = `LEVEL: ${state.settings.outsiderIntensity} / 100`;
-            document.getElementById('range-rhyme').value = state.settings.rhymeDensity;
-            document.getElementById('val-rhyme').innerText = state.settings.rhymeDensity;
-            document.getElementById('api-key-input').value = state.settings.apiKey || '';
-            document.getElementById('bpm-input').value = state.settings.bpm || 90;
+        function updateSetting(k, v) { state.settings[k] = v; applySettings(); save(); }
+        function applySettings() {
+            $('val-outsider').innerText = state.settings.outsiderIntensity;
+            $('val-rhyme').innerText = state.settings.rhymeDensity;
+            $('api-key-input').value = state.settings.apiKey || '';
+            $('range-outsider').value = state.settings.outsiderIntensity;
+            $('range-rhyme').value = state.settings.rhymeDensity;
+            $('bpm-input').value = state.settings.bpm;
             document.querySelectorAll('.loc-btn').forEach(b => {
-                b.classList.toggle('bg-white', b.dataset.loc === state.settings.localization);
-                b.classList.toggle('text-black', b.dataset.loc === state.settings.localization);
+                const active = b.dataset.loc === state.settings.localization;
+                b.classList.toggle('bg-white', active); b.classList.toggle('text-black', active);
             });
         }
-        function saveState() { localStorage.setItem('saveHXPE_v4', JSON.stringify(state)); }
-        function clearState() { if (confirm("PURGE ALL DATA?")) { localStorage.removeItem('saveHXPE_v4'); location.reload(); } }
-        function startTime() { setInterval(() => { document.getElementById('time-display').innerText = new Date().toTimeString().split(' ')[0]; }, 1000); }
-        function setEngineLoading(l, type = 'write') {
-            const b = type === 'write' ? document.getElementById('btn-run-engine') : document.getElementById('btn-refine');
-            const bt = type === 'write' ? document.getElementById('btn-text') : document.getElementById('btn-refine-text');
-            const st = document.getElementById('status-text');
-            if (l) { 
-                b.disabled = true; 
-                bt.innerText = 'PROCESSING...'; 
-                bt.classList.add('loading-pulse'); 
-                st.innerText = 'UPLINK_IN_PROGRESS'; 
-            }
-            else { 
-                b.disabled = false; 
-                bt.innerText = type === 'write' ? 'WRITE' : 'REFINE'; 
-                bt.classList.remove('loading-pulse'); 
-                st.innerText = 'SYSTEM_CONNECTED'; 
-            }
+
+        function setLoading(l, type) {
+            const b = type === 'write' ? $('btn-write') : $('btn-refine');
+            const bt = type === 'write' ? $('btn-write-text') : $('btn-refine-text');
+            if (l) { b.classList.add('loading-pulse'); bt.innerText = 'PROC'; $('status-pixel').classList.add('animate-pulse'); $('status-text').innerText = 'UPLINKING...'; }
+            else { b.classList.remove('loading-pulse'); bt.innerText = type.toUpperCase(); $('status-pixel').classList.remove('animate-pulse'); $('status-text').innerText = 'SYSTEM_CONNECTED'; }
         }
-        function renderOutput(h) { document.getElementById('output-lyrics').innerHTML = h; }
+
+        function newSession() { if (confirm("ARCHIVE AND REWIND?")) { state.currentInput = ''; state.currentOutput = ''; state.versions = []; state.sessionId = Math.random().toString(36).slice(2, 8).toUpperCase(); $('input-lyrics').value = ''; $('output-lyrics').innerHTML = '<div class="text-white/5 italic">FEED SYSTEM DATA TO BEGIN_</div>'; save(); init(); } }
+        function save() { localStorage.setItem('saveHXPE_V5', JSON.stringify(state)); }
+        function clearState() { if (confirm("PURGE SYSTEM?")) { localStorage.clear(); location.reload(); } }
+        function startTime() { setInterval(() => $('time-display').innerText = new Date().toTimeString().split(' ')[0], 1000); }
 
         init();
     </script>
