@@ -222,7 +222,7 @@
                 updateVersions();
                 renderHistory();
                 save();
-            } catch (e) { renderOutput(`CONNECTION_FAILED: ${e.message}`); }
+            } catch (e) { renderOutput(e.message); }
             finally { setLoading(false, 'write'); }
         }
 
@@ -237,50 +237,35 @@
                 renderOutput(out, true);
                 updateVersions();
                 save();
-            } catch (e) { renderOutput(`REFINE_FAILED: ${e.message}`); }
+            } catch (e) { renderOutput(e.message); }
             finally { setLoading(false, 'refine'); }
         }
 
         async function callAI(p) {
-            const models = ['gemini-1.5-flash', 'gemini-pro', 'gemini-2.0-flash'];
-            let lastErr = null;
+            try {
+                const model = 'gemini-1.5-flash-latest';
+                const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${state.settings.apiKey}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: p }] }] })
+                });
 
-            for (const model of models) {
-                try {
-                    const r = await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:generateContent`, {
-                        method: "POST",
-                        headers: { 
-                            "Content-Type": "application/json",
-                            "x-goog-api-key": state.settings.apiKey
-                        },
-                        body: JSON.stringify({ contents: [{ parts: [{ text: p }] }] })
-                    });
-                    
-                    if (r.status === 404) {
-                        console.warn(`Model ${model} not found (404). Trying next...`);
-                        continue;
-                    }
-
-                    if (!r.ok) {
-                        const errorData = await r.json();
-                        console.error(`Gemini API Error (${model}):`, errorData);
-                        throw new Error(`API_ERROR: ${r.status}`);
-                    }
-
-                    const d = await r.json(); 
-                    if (!d.candidates || !d.candidates[0].content || !d.candidates[0].content.parts[0].text) {
-                        console.error("Malformed Response:", d);
-                        throw new Error("MALFORMED_RESPONSE");
-                    }
-                    return d.candidates[0].content.parts[0].text;
-                } catch (err) {
-                    console.error(`Fetch Exception (${model}):`, err);
-                    lastErr = err;
-                    if (err.message.includes('404')) continue;
-                    throw err;
+                if (!r.ok) {
+                    const errorData = await r.json();
+                    console.error("Gemini API Error:", errorData);
+                    throw new Error("API ERROR — CHECK KEY OR MODEL");
                 }
+
+                const d = await r.json();
+                if (!d.candidates || !d.candidates[0].content || !d.candidates[0].content.parts[0].text) {
+                    console.error("Malformed Response:", d);
+                    throw new Error("API ERROR — CHECK KEY OR MODEL");
+                }
+                return d.candidates[0].content.parts[0].text;
+            } catch (err) {
+                console.error("Fetch Exception:", err);
+                throw new Error("API ERROR — CHECK KEY OR MODEL");
             }
-            throw lastErr || new Error("ALL_MODELS_FAILED");
         }
 
         function renderOutput(text, typing = false) {
