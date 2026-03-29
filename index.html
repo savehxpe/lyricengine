@@ -163,7 +163,7 @@
         const $ = id => document.getElementById(id);
 
         function init() {
-            const saved = localStorage.getItem('saveHXPE_V6');
+            const saved = localStorage.getItem('saveHXPE_V7');
             if (saved) state = { ...state, ...JSON.parse(saved) };
             
             $('input-lyrics').value = state.currentInput || '';
@@ -420,7 +420,7 @@
         }
 
         function newSession() { if (confirm("ARCHIVE AND REWIND?")) { state.currentInput = ''; state.currentOutput = ''; state.versions = []; state.sessionId = Math.random().toString(36).slice(2, 8).toUpperCase(); $('input-lyrics').value = ''; $('output-lyrics').innerHTML = '<div class="text-white/5 italic">FEED SYSTEM DATA TO BEGIN_</div>'; save(); init(); } }
-        function save() { localStorage.setItem('saveHXPE_V6', JSON.stringify(state)); }
+        function save() { localStorage.setItem('saveHXPE_V7', JSON.stringify(state)); }
         function clearState() { if (confirm("PURGE SYSTEM?")) { localStorage.clear(); location.reload(); } }
         function startTime() { setInterval(() => $('time-display').innerText = new Date().toTimeString().split(' ')[0], 1000); }
 
