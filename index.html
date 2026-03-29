@@ -1,23 +1,30 @@
 <!DOCTYPE html>
 <html class="dark" lang="en">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>saveHXPE // LYRIC ENGINE</title>
-    <link href="./output.css" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="./output.css" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
 </head>
+
 <body class="min-h-screen flex flex-col overflow-hidden select-none">
 
     <!-- TOP BAR -->
     <header class="h-14 border-b border-white/5 flex justify-between items-center px-6 z-50 bg-[#0A0A0A]">
         <div class="font-['Space_Grotesk'] font-black text-lg tracking-[0.2em] uppercase">saveHXPE // LYRIC ENGINE</div>
         <div class="flex items-center space-x-6">
-            <button onclick="togglePanel('history')" class="text-[10px] font-black tracking-widest uppercase hover:text-white text-gray-500 transition-all flex items-center">
+            <button onclick="togglePanel('history')"
+                class="text-[10px] font-black tracking-widest uppercase hover:text-white text-gray-500 transition-all flex items-center">
                 <span class="material-symbols-outlined text-sm mr-2">history</span> ARCHIVE
             </button>
-            <button onclick="togglePanel('settings')" class="text-[10px] font-black tracking-widest uppercase hover:text-white text-gray-500 transition-all flex items-center">
+            <button onclick="togglePanel('settings')"
+                class="text-[10px] font-black tracking-widest uppercase hover:text-white text-gray-500 transition-all flex items-center">
                 <span class="material-symbols-outlined text-sm mr-2">settings</span> CONFIG
             </button>
         </div>
@@ -25,13 +32,16 @@
 
     <!-- MAIN STUDIO -->
     <main class="flex-1 flex relative overflow-hidden">
-        
+
         <!-- HISTORY/RMD PANEL (LEFT SLIDE) -->
-        <aside id="panel-history" class="panel-slide panel-history-hidden absolute left-0 top-0 w-80 h-full bg-[#0F0F0F] border-r border-white/5 z-40 flex flex-col">
+        <aside id="panel-history"
+            class="panel-slide panel-history-hidden absolute left-0 top-0 w-80 h-full bg-[#0F0F0F] border-r border-white/5 z-40 flex flex-col">
             <div class="p-6 border-b border-white/5 flex justify-between items-center">
                 <div class="flex space-x-6">
-                    <button id="tab-history" onclick="toggleSidebarTab('history')" class="text-[10px] font-black tracking-widest text-white uppercase">ARCHIVE</button>
-                    <button id="tab-rmd" onclick="toggleSidebarTab('rmd')" class="text-[10px] font-black tracking-widest text-gray-500 uppercase">RMD_DB</button>
+                    <button id="tab-history" onclick="toggleSidebarTab('history')"
+                        class="text-[10px] font-black tracking-widest text-white uppercase">ARCHIVE</button>
+                    <button id="tab-rmd" onclick="toggleSidebarTab('rmd')"
+                        class="text-[10px] font-black tracking-widest text-gray-500 uppercase">RMD_DB</button>
                 </div>
                 <button onclick="togglePanel('history')" class="material-symbols-outlined text-sm">close</button>
             </div>
@@ -44,7 +54,8 @@
         </aside>
 
         <!-- SETTINGS PANEL (RIGHT SLIDE) -->
-        <aside id="panel-settings" class="panel-slide panel-hidden absolute right-0 top-0 w-80 h-full bg-[#0F0F0F] border-l border-white/5 z-40 flex flex-col">
+        <aside id="panel-settings"
+            class="panel-slide panel-hidden absolute right-0 top-0 w-80 h-full bg-[#0F0F0F] border-l border-white/5 z-40 flex flex-col">
             <div class="p-6 border-b border-white/5 flex justify-between items-center">
                 <span class="text-[10px] font-black tracking-widest uppercase">SYSTEM_CONFIG</span>
                 <button onclick="togglePanel('settings')" class="material-symbols-outlined text-sm">close</button>
@@ -52,30 +63,39 @@
             <div class="flex-1 overflow-y-auto p-8 space-y-10">
                 <div class="space-y-4">
                     <label class="text-[9px] font-black tracking-widest text-gray-500 uppercase">API_KEY</label>
-                    <input type="password" id="api-key-input" placeholder="GEMINI_UPLINK_KEY" class="w-full bg-black border border-white/10 p-3 text-xs font-mono focus:border-white focus:ring-0" autocomplete="off" onchange="updateSetting('apiKey', this.value)">
+                    <input type="password" id="api-key-input" placeholder="GEMINI_UPLINK_KEY"
+                        class="w-full bg-black border border-white/10 p-3 text-xs font-mono focus:border-white focus:ring-0"
+                        autocomplete="off" onchange="updateSetting('apiKey', this.value)">
                 </div>
                 <div class="space-y-4">
                     <label class="flex justify-between text-[9px] font-black tracking-widest text-gray-500 uppercase">
                         OUTSIDER_INTENSITY <span id="val-outsider" class="text-white">84</span>
                     </label>
-                    <input id="range-outsider" type="range" max="100" min="0" value="84" oninput="updateSetting('outsiderIntensity', this.value)">
+                    <input id="range-outsider" type="range" max="100" min="0" value="84"
+                        oninput="updateSetting('outsiderIntensity', this.value)">
                 </div>
                 <div class="space-y-4">
                     <label class="flex justify-between text-[9px] font-black tracking-widest text-gray-500 uppercase">
                         RHYME_DENSITY <span id="val-rhyme" class="text-white">70</span>
                     </label>
-                    <input id="range-rhyme" type="range" max="100" min="0" value="70" oninput="updateSetting('rhymeDensity', this.value)">
+                    <input id="range-rhyme" type="range" max="100" min="0" value="70"
+                        oninput="updateSetting('rhymeDensity', this.value)">
                 </div>
                 <div class="space-y-4">
                     <label class="text-[9px] font-black tracking-widest text-gray-500 uppercase">LOCALIZATION</label>
                     <div class="grid grid-cols-3 border border-white/10">
-                        <button onclick="updateSetting('localization', 'LESOTHO')" class="loc-btn py-2 text-[8px] font-black uppercase" data-loc="LESOTHO">LSO</button>
-                        <button onclick="updateSetting('localization', 'AFRICAN')" class="loc-btn py-2 text-[8px] font-black border-x border-white/10 uppercase" data-loc="AFRICAN">AFR</button>
-                        <button onclick="updateSetting('localization', 'GLOBAL')" class="loc-btn py-2 text-[8px] font-black uppercase" data-loc="GLOBAL">GLO</button>
+                        <button onclick="updateSetting('localization', 'LESOTHO')"
+                            class="loc-btn py-2 text-[8px] font-black uppercase" data-loc="LESOTHO">LSO</button>
+                        <button onclick="updateSetting('localization', 'AFRICAN')"
+                            class="loc-btn py-2 text-[8px] font-black border-x border-white/10 uppercase"
+                            data-loc="AFRICAN">AFR</button>
+                        <button onclick="updateSetting('localization', 'GLOBAL')"
+                            class="loc-btn py-2 text-[8px] font-black uppercase" data-loc="GLOBAL">GLO</button>
                     </div>
                 </div>
                 <div class="pt-8 border-t border-white/5">
-                    <button onclick="clearState()" class="w-full border border-red-900/40 text-red-900 hover:text-red-500 hover:border-red-500 py-3 text-[9px] font-black transition-all">PURGE_DATA</button>
+                    <button onclick="clearState()"
+                        class="w-full border border-red-900/40 text-red-900 hover:text-red-500 hover:border-red-500 py-3 text-[9px] font-black transition-all">PURGE_DATA</button>
                 </div>
             </div>
         </aside>
@@ -85,17 +105,23 @@
             <!-- INPUT AREA -->
             <section class="flex-1 flex flex-col p-8 border-r border-white/5 relative">
                 <div class="flex justify-between items-center mb-4">
-                    <div class="text-[10px] font-black tracking-widest text-gray-600 uppercase">RAW_DATA_INPUT <span id="session-id-display" class="ml-2 text-white/20"></span></div>
-                    <button onclick="newSession()" class="text-[9px] font-black border border-white/10 px-3 py-1 hover:bg-white hover:text-black transition-all">NEW_START</button>
+                    <div class="text-[10px] font-black tracking-widest text-gray-600 uppercase">RAW_DATA_INPUT <span
+                            id="session-id-display" class="ml-2 text-white/20"></span></div>
+                    <button onclick="newSession()"
+                        class="text-[9px] font-black border border-white/10 px-3 py-1 hover:bg-white hover:text-black transition-all">NEW_START</button>
                 </div>
-                <textarea id="input-lyrics" oninput="handleInput(this.value)" class="flex-1 bg-transparent border-0 focus:ring-0 p-0 text-xl font-medium leading-relaxed placeholder:text-white/5 resize-none" placeholder="START WRITING OR PASTE DATA..."></textarea>
-                
+                <textarea id="input-lyrics" oninput="handleInput(this.value)"
+                    class="flex-1 bg-transparent border-0 focus:ring-0 p-0 text-xl font-medium leading-relaxed placeholder:text-white/5 resize-none"
+                    placeholder="START WRITING OR PASTE DATA..."></textarea>
+
                 <!-- Action Buttons Overlay -->
                 <div class="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col space-y-2 z-10 px-4">
-                    <button id="btn-write" onclick="runEngine()" class="w-14 h-48 bg-white text-black flex items-center justify-center hover:bg-gray-200 transition-all font-black group">
+                    <button id="btn-write" onclick="runEngine()"
+                        class="w-14 h-48 bg-white text-black flex items-center justify-center hover:bg-gray-200 transition-all font-black group">
                         <span id="btn-write-text" class="vertical-text">WRITE</span>
                     </button>
-                    <button id="btn-refine" onclick="refineLyrics()" class="w-14 h-48 bg-black border border-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black transition-all font-black group">
+                    <button id="btn-refine" onclick="refineLyrics()"
+                        class="w-14 h-48 bg-black border border-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black transition-all font-black group">
                         <span id="btn-refine-text" class="vertical-text">REFINE</span>
                     </button>
                 </div>
@@ -111,22 +137,28 @@
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center bg-black border border-white/5 px-3 py-1">
                             <span class="text-[8px] font-black mr-2 opacity-30">BPM</span>
-                            <input type="number" id="bpm-input" value="90" class="bg-transparent border-0 w-8 p-0 text-[10px] font-black focus:ring-0" onchange="updateSetting('bpm', this.value)">
+                            <input type="number" id="bpm-input" value="90"
+                                class="bg-transparent border-0 w-8 p-0 text-[10px] font-black focus:ring-0"
+                                onchange="updateSetting('bpm', this.value)">
                         </div>
-                        <button onclick="togglePerformance()" id="btn-perf" class="text-[9px] font-black border border-white/10 px-4 py-1.5 hover:bg-white hover:text-black transition-all uppercase">PERFORMANCE_OFF</button>
+                        <button onclick="togglePerformance()" id="btn-perf"
+                            class="text-[9px] font-black border border-white/10 px-4 py-1.5 hover:bg-white hover:text-black transition-all uppercase">PERFORMANCE_OFF</button>
                     </div>
                 </div>
-                <div id="output-lyrics" class="flex-1 p-10 overflow-y-auto text-xl leading-relaxed whitespace-pre-wrap font-medium">
+                <div id="output-lyrics"
+                    class="flex-1 p-10 overflow-y-auto text-xl leading-relaxed whitespace-pre-wrap font-medium">
                     <div class="text-white/5 italic">FEED SYSTEM DATA TO BEGIN_</div>
                 </div>
-                
+
                 <!-- Rhyme Harvester Slide -->
-                <div id="harvest-panel" class="hidden absolute bottom-6 left-6 right-6 bg-white text-black p-4 flex justify-between items-center shadow-2xl z-30 slide-up">
+                <div id="harvest-panel"
+                    class="hidden absolute bottom-6 left-6 right-6 bg-white text-black p-4 flex justify-between items-center shadow-2xl z-30 slide-up">
                     <div class="flex flex-col overflow-hidden">
                         <span class="text-[8px] font-black uppercase opacity-40">HARVEST_CHAIN_DETECTED</span>
                         <span id="harvest-chain-text" class="text-sm font-bold truncate">...</span>
                     </div>
-                    <button onclick="acceptHarvest()" class="bg-black text-white px-4 py-2 text-[10px] font-black uppercase tracking-tighter hover:bg-white hover:text-black border border-black transition-all">SAVE_TO_RMD</button>
+                    <button onclick="acceptHarvest()"
+                        class="bg-black text-white px-4 py-2 text-[10px] font-black uppercase tracking-tighter hover:bg-white hover:text-black border border-black transition-all">SAVE_TO_RMD</button>
                 </div>
             </section>
         </div>
@@ -135,11 +167,16 @@
     <!-- FOOTER STATUS -->
     <footer class="h-8 border-t border-white/5 bg-[#0A0A0A] flex items-center justify-between px-6 z-50">
         <div class="flex items-center space-x-6">
-            <div class="flex items-center space-x-2"><div id="status-pixel" class="w-1.5 h-1.5 bg-white"></div><span id="status-text" class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-500">SYSTEM_CONNECTED</span></div>
-            <span class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-700">SES_ID: <span id="footer-sid">----</span></span>
+            <div class="flex items-center space-x-2">
+                <div id="status-pixel" class="w-1.5 h-1.5 bg-white"></div><span id="status-text"
+                    class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-500">SYSTEM_CONNECTED</span>
+            </div>
+            <span class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-700">SES_ID: <span
+                    id="footer-sid">----</span></span>
         </div>
         <div class="flex items-center space-x-4">
-            <button onclick="testAPI()" class="text-[8px] font-black border border-white/20 px-2 py-0.5 hover:bg-white hover:text-black transition-all">API_TEST</button>
+            <button onclick="testAPI()"
+                class="text-[8px] font-black border border-white/20 px-2 py-0.5 hover:bg-white hover:text-black transition-all">API_TEST</button>
             <span class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-700">LOCALE: LESOTHO_UPLINK</span>
             <span id="time-display" class="text-[8px] font-black tracking-[0.2em] uppercase text-white">00:00:00</span>
         </div>
@@ -151,7 +188,13 @@
 
         let currentLoopId = 0;
         let state = {
-            settings: { outsiderIntensity: 84, rhymeDensity: 70, localization: 'LESOTHO', apiKey: '', bpm: 90 },
+            settings: {
+                outsiderIntensity: 84,
+                rhymeDensity: 70,
+                localization: 'LESOTHO',
+                apiKey: 'AIzaSyCniBkLos68De6AOhkJYb6hSenVvpMo7DE',
+                bpm: 90
+            },
             history: [],
             rmd: [],
             currentInput: '',
@@ -164,18 +207,18 @@
         const $ = id => document.getElementById(id);
 
         function init() {
-            const saved = localStorage.getItem('saveHXPE_V7');
+            const saved = localStorage.getItem('saveHXPE_V8');
             if (saved) state = { ...state, ...JSON.parse(saved) };
-            
+
             $('input-lyrics').value = state.currentInput || '';
             $('session-id-display').innerText = state.sessionId;
             $('footer-sid').innerText = state.sessionId;
-            
+
             if (state.currentOutput) {
                 renderOutput(state.currentOutput);
                 updateVersions();
             }
-            
+
             applySettings();
             startTime();
             renderHistory();
@@ -211,11 +254,11 @@
 
         async function runEngine() {
             const input = $('input-lyrics').value;
-            if (!input.trim() || !state.settings.apiKey) return alert("UPLINK KEY REQUIRED");
+            if (!input.trim()) return;
             setLoading(true, 'write');
             try {
                 const prompt = `${IDENTITY_CORE}\nSettings: ${JSON.stringify(state.settings)}\n${BASE_PROMPT}\nInput: ${input}`;
-                const out = await callAI(prompt);
+                const out = await callAI(prompt, state.settings.apiKey);
                 state.versions = [{ text: out, time: new Date().toLocaleTimeString() }];
                 state.currentOutput = out;
                 state.history.unshift({ input, output: out, time: new Date().toLocaleString(), sid: state.sessionId });
@@ -228,11 +271,11 @@
         }
 
         async function refineLyrics() {
-            if (!state.currentOutput || !state.settings.apiKey) return alert("NO DATA OR KEY");
+            if (!state.currentOutput) return;
             setLoading(true, 'refine');
             try {
                 const prompt = `${IDENTITY_CORE}\nSettings: ${JSON.stringify(state.settings)}\nRefine instruction: Technical enhancement, keep core meaning. Multis. Internal chains.\nInput: ${state.currentOutput}`;
-                const out = await callAI(prompt);
+                const out = await callAI(prompt, state.settings.apiKey);
                 state.versions.push({ text: out, time: new Date().toLocaleTimeString() });
                 state.currentOutput = out;
                 renderOutput(out, true);
@@ -242,13 +285,29 @@
             finally { setLoading(false, 'refine'); }
         }
 
-        // HARD RESET API LOGIC
-        async function callAI(prompt) {
-            const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${state.settings.apiKey}`;
+        /**
+         * Modernized callAI for Gemini 3.1 (March 2026)
+         * Optimized for low-latency lyric generation.
+         */
+        async function callAI(prompt, apiKeyArg) {
+            // 1. Updated Endpoint (v1beta) and Model ID (Gemini 3.1 Flash-Lite)
+            const API_VERSION = 'v1beta';
+            const MODEL_ID = 'gemini-3.1-flash-lite-preview';
+            
+            // Personal Use Fallback: If no key is provided, use the user's provided key directly
+            const apiKey = apiKeyArg || 'AIzaSyCniBkLos68De6AOhkJYb6hSenVvpMo7DE';
+            
+            const url = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL_ID}:generateContent?key=${apiKey}`;
+
             const payload = {
                 contents: [{
                     parts: [{ text: prompt }]
-                }]
+                }],
+                generationConfig: {
+                    temperature: 0.85, // Balanced for creative lyrics
+                    maxOutputTokens: 512,
+                    responseMimeType: "text/plain"
+                }
             };
 
             try {
@@ -259,33 +318,36 @@
                 });
 
                 const data = await response.json();
-                console.log("FULL API RESPONSE:", data);
 
+                // 2. Error Handling for 404/403
                 if (!response.ok) {
-                    const errMsg = data.error ? data.error.message : response.statusText;
-                    throw new Error(`API_ERROR (${response.status}): ${errMsg}`);
+                    const msg = data.error ? data.error.message : response.statusText;
+                    console.error("CRITICAL UPLINK ERROR:", msg);
+                    throw new Error(`API_ERROR (${response.status}): ${msg}`);
                 }
 
-                if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
-                    return data.candidates[0].content.parts[0].text;
-                } else {
-                    throw new Error("EMPTY_RESPONSE_FROM_API");
-                }
+                console.log("FULL API RESPONSE:", data);
+                return data.candidates[0].content.parts[0].text;
+
             } catch (error) {
-                console.error("CRITICAL UPLINK ERROR:", error);
-                throw error; // Passing actual error back to engine
+                console.error("Full Test Error Context:", error);
+                throw error;
             }
         }
 
         async function testAPI() {
             setLoading(true, 'write');
-            renderOutput("REROUTING UPLINK... TESTING CORE...", true);
+            renderOutput(">>> INITIATING UPLINK TEST...\n>>> MODEL: gemini-3.1-flash-lite-preview\n>>> ENDPOINT: v1beta/models\n\nPROBING CONNECTION...", true);
+
             try {
-                const res = await callAI("Write 2 lines of high-velocity rap lyrics.");
-                renderOutput(`SUCCESSFUL_UPLINK:\n\n${res}`, true);
+                const res = await callAI("Write 2 lines of rap lyrics about space exploration.", state.settings.apiKey);
+                renderOutput(`>>> UPLINK SUCCESSFUL\n>>> RESPONSE RECEIVED:\n\n${res}`, true);
+                $('status-text').innerText = 'UPLINK_STABLE';
+                $('status-pixel').className = 'w-1.5 h-1.5 bg-green-500';
             } catch (e) {
-                renderOutput(`UPLINK_FAILURE: ${e.message}`);
-                console.error("Full Test Error Context:", e);
+                renderOutput(`>>> UPLINK FAILED\n>>> ERROR: ${e.message}\n\n[CHECK CONSOLE FOR FULL LOG]`, true);
+                $('status-text').innerText = 'UPLINK_CRITICAL';
+                $('status-pixel').className = 'w-1.5 h-1.5 bg-red-500';
             } finally {
                 setLoading(false, 'write');
             }
@@ -295,10 +357,10 @@
             const loopId = ++currentLoopId;
             const div = $('output-lyrics'); div.innerHTML = '';
             const lines = text.split('\n');
-            
+
             // Check for harvesting
             const matches = text.match(/\[\[(.*?)\]\]/g);
-            if (matches && matches.length > 1) showHarvest(matches[0].replace(/[\[\]]/g,'') + ' / ' + matches[1].replace(/[\[\]]/g,''));
+            if (matches && matches.length > 1) showHarvest(matches[0].replace(/[\[\]]/g, '') + ' / ' + matches[1].replace(/[\[\]]/g, ''));
 
             const display = async () => {
                 for (let line of lines) {
@@ -354,13 +416,13 @@
             state.perf.active = true;
             const b = $('btn-perf');
             b.innerText = 'PERFORMANCE_ON'; b.classList.add('bg-white', 'text-black');
-            
+
             lines.forEach(l => l.classList.add('perf-dim'));
             let cur = 0;
             const ms = (60000 / state.settings.bpm) * 4; // 1 bar at 4/4
             state.perf.timer = setInterval(() => {
                 if (cur >= lines.length) return stopPerf();
-                if (cur > 0) lines[cur-1].classList.replace('perf-active', 'perf-dim');
+                if (cur > 0) lines[cur - 1].classList.replace('perf-active', 'perf-dim');
                 lines[cur].classList.replace('perf-dim', 'perf-active');
                 lines[cur].scrollIntoView({ behavior: 'smooth', block: 'center' });
                 cur++;
@@ -383,7 +445,7 @@
                 const d = document.createElement('div');
                 d.className = 'p-4 bg-white/5 border border-white/0 hover:border-white/10 transition-all cursor-pointer group';
                 d.onclick = () => { $('input-lyrics').value = h.input; state.currentInput = h.input; state.currentOutput = h.output; renderOutput(h.output); togglePanel('history'); };
-                d.innerHTML = `<div class="text-[8px] font-black opacity-30 mb-1">${h.time}</div><div class="text-xs font-bold truncate">${h.output.split('\n')[0].replace(/\[\[|\]\]/g,'')}</div>`;
+                d.innerHTML = `<div class="text-[8px] font-black opacity-30 mb-1">${h.time}</div><div class="text-xs font-bold truncate">${h.output.split('\n')[0].replace(/\[\[|\]\]/g, '')}</div>`;
                 l.appendChild(d);
             });
             if (!state.history.length) l.innerHTML = '<div class="text-[10px] font-black p-4 text-center opacity-20 uppercase">NO_SESSIONS</div>';
@@ -394,11 +456,11 @@
             state.rmd.forEach(r => {
                 const d = document.createElement('div');
                 d.className = 'p-4 bg-white/5 border border-white/0 hover:border-white/10 transition-all cursor-pointer group flex justify-between items-center';
-                d.onclick = () => { 
+                d.onclick = () => {
                     const ta = $('input-lyrics');
-                    ta.value += (ta.value ? '\n' : '') + r.chain; 
-                    state.currentInput = ta.value; 
-                    save(); 
+                    ta.value += (ta.value ? '\n' : '') + r.chain;
+                    state.currentInput = ta.value;
+                    save();
                 };
                 d.innerHTML = `<div class="text-xs font-bold truncate pr-4">${r.chain}</div><span class="material-symbols-outlined text-xs opacity-20 group-hover:opacity-100">add</span>`;
                 l.appendChild(d);
@@ -428,11 +490,12 @@
         }
 
         function newSession() { if (confirm("ARCHIVE AND REWIND?")) { state.currentInput = ''; state.currentOutput = ''; state.versions = []; state.sessionId = Math.random().toString(36).slice(2, 8).toUpperCase(); $('input-lyrics').value = ''; $('output-lyrics').innerHTML = '<div class="text-white/5 italic">FEED SYSTEM DATA TO BEGIN_</div>'; save(); init(); } }
-        function save() { localStorage.setItem('saveHXPE_V7', JSON.stringify(state)); }
+        function save() { localStorage.setItem('saveHXPE_V8', JSON.stringify(state)); }
         function clearState() { if (confirm("PURGE SYSTEM?")) { localStorage.clear(); location.reload(); } }
         function startTime() { setInterval(() => $('time-display').innerText = new Date().toTimeString().split(' ')[0], 1000); }
 
         init();
     </script>
 </body>
+
 </html>
