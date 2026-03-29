@@ -163,7 +163,7 @@
         const $ = id => document.getElementById(id);
 
         function init() {
-            const saved = localStorage.getItem('saveHXPE_V5');
+            const saved = localStorage.getItem('saveHXPE_V6');
             if (saved) state = { ...state, ...JSON.parse(saved) };
             
             $('input-lyrics').value = state.currentInput || '';
@@ -222,7 +222,7 @@
                 updateVersions();
                 renderHistory();
                 save();
-            } catch (e) { renderOutput("API_CONNECTION_FAILED. CHECK_KEY_OR_NETWORK."); }
+            } catch (e) { renderOutput(`CONNECTION_FAILED: ${e.message}`); }
             finally { setLoading(false, 'write'); }
         }
 
@@ -237,7 +237,7 @@
                 renderOutput(out, true);
                 updateVersions();
                 save();
-            } catch (e) { renderOutput("REFINE_FAILED. CHECK_LINK."); }
+            } catch (e) { renderOutput(`REFINE_FAILED: ${e.message}`); }
             finally { setLoading(false, 'refine'); }
         }
 
@@ -402,7 +402,7 @@
         }
 
         function newSession() { if (confirm("ARCHIVE AND REWIND?")) { state.currentInput = ''; state.currentOutput = ''; state.versions = []; state.sessionId = Math.random().toString(36).slice(2, 8).toUpperCase(); $('input-lyrics').value = ''; $('output-lyrics').innerHTML = '<div class="text-white/5 italic">FEED SYSTEM DATA TO BEGIN_</div>'; save(); init(); } }
-        function save() { localStorage.setItem('saveHXPE_V5', JSON.stringify(state)); }
+        function save() { localStorage.setItem('saveHXPE_V6', JSON.stringify(state)); }
         function clearState() { if (confirm("PURGE SYSTEM?")) { localStorage.clear(); location.reload(); } }
         function startTime() { setInterval(() => $('time-display').innerText = new Date().toTimeString().split(' ')[0], 1000); }
 
