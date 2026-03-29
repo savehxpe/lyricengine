@@ -139,6 +139,7 @@
             <span class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-700">SES_ID: <span id="footer-sid">----</span></span>
         </div>
         <div class="flex items-center space-x-4">
+            <button onclick="testAPI()" class="text-[8px] font-black border border-white/20 px-2 py-0.5 hover:bg-white hover:text-black transition-all">API_TEST</button>
             <span class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-700">LOCALE: LESOTHO_UPLINK</span>
             <span id="time-display" class="text-[8px] font-black tracking-[0.2em] uppercase text-white">00:00:00</span>
         </div>
@@ -241,30 +242,52 @@
             finally { setLoading(false, 'refine'); }
         }
 
-        async function callAI(p) {
+        // HARD RESET API LOGIC
+        async function callAI(prompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${state.settings.apiKey}`;
+            const payload = {
+                contents: [{
+                    parts: [{ text: prompt }]
+                }]
+            };
+
             try {
-                const model = 'gemini-1.5-flash-latest';
-                const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${state.settings.apiKey}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: p }] }] })
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
 
-                if (!r.ok) {
-                    const errorData = await r.json();
-                    console.error("Gemini API Error:", errorData);
-                    throw new Error("API ERROR — CHECK KEY OR MODEL");
+                const data = await response.json();
+                console.log("FULL API RESPONSE:", data);
+
+                if (!response.ok) {
+                    const errMsg = data.error ? data.error.message : response.statusText;
+                    throw new Error(`API_ERROR (${response.status}): ${errMsg}`);
                 }
 
-                const d = await r.json();
-                if (!d.candidates || !d.candidates[0].content || !d.candidates[0].content.parts[0].text) {
-                    console.error("Malformed Response:", d);
-                    throw new Error("API ERROR — CHECK KEY OR MODEL");
+                if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error("EMPTY_RESPONSE_FROM_API");
                 }
-                return d.candidates[0].content.parts[0].text;
-            } catch (err) {
-                console.error("Fetch Exception:", err);
-                throw new Error("API ERROR — CHECK KEY OR MODEL");
+            } catch (error) {
+                console.error("CRITICAL UPLINK ERROR:", error);
+                throw error; // Passing actual error back to engine
+            }
+        }
+
+        async function testAPI() {
+            setLoading(true, 'write');
+            renderOutput("REROUTING UPLINK... TESTING CORE...", true);
+            try {
+                const res = await callAI("Write 2 lines of high-velocity rap lyrics.");
+                renderOutput(`SUCCESSFUL_UPLINK:\n\n${res}`, true);
+            } catch (e) {
+                renderOutput(`UPLINK_FAILURE: ${e.message}`);
+                console.error("Full Test Error Context:", e);
+            } finally {
+                setLoading(false, 'write');
             }
         }
 
