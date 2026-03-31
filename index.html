@@ -4,82 +4,489 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>saveHXPE // LYRIC ENGINE</title>
+    <title>saveHXPE // OUTWORLD GLOBAL</title>
     <link href="./output.css" rel="stylesheet" />
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Fragment+Mono&family=Space+Grotesk:wght@300;400;500;600;700;900&display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
+    <meta name="description" content="saveHXPE // OUTWORLD GLOBAL: High-fidelity Southern African R&B and Soul performance engine. Grounded in the Maloti mountains, broadcasted to the globe." />
+    <meta property="og:title" content="saveHXPE // OUTWORLD GLOBAL" />
+    <meta property="og:description" content="The Kingdom's most powerful R&B/Soul lyric generation and performance engine." />
+    <meta name="theme-color" content="#000000" />
     <style>
         /* Modern 2026 Brutalist Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #0A0A0A; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 0; }
-        ::-webkit-scrollbar-thumb:hover { background: #555; }
-        
-        /* Layout Fixes */
-        #output-lyrics {
-            max-height: 82vh;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #333 #0A0A0A;
-        }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #222; border: 1px solid #444; }
         
         html, body {
-            overflow-x: hidden;
+            overflow: hidden;
             width: 100%;
             height: 100%;
+            background: #000;
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .basalt-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: start;
-            height: calc(100vh - 56px - 32px); /* Calc for header and footer */
-            overflow: hidden;
+        /* BRUTALIST GRID OVERLAY */
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+            animation: grid-move 60s linear infinite;
+        }
+        @keyframes grid-move {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
         }
 
+        .app-shell {
+            display: flex !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            background: #000 !important;
+            overflow: hidden !important;
+            position: relative;
+        }
+
+        /* HARD SYMMETRY: 50/50 SPLIT */
+        .pane {
+            flex: 1 !important;
+            height: 100% !important;
+            padding: 80px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .left-pane { border-right: 1px solid rgba(255,255,255,0.1); }
+        
+        /* MANIFESTATION CANVAS styling */
+        #input-area, #output-area {
+            width: 100% !important;
+            height: 100% !important;
+            background: transparent !important;
+            color: #fff !important;
+            border: none !important;
+            font-size: 24px !important;
+            font-family: 'Fragment Mono', 'JetBrains Mono', monospace !important;
+            font-weight: 500;
+            line-height: 1.6 !important;
+            outline: none !important;
+            resize: none !important;
+            overflow-y: auto;
+        }
+
+        /* CENTER BRIDGE: DEAD CENTER & OPAQUE */
+        .control-bridge {
+            position: absolute !important;
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            z-index: 1000 !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 40px;
+            background: #000;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 100px rgba(0,0,0,0.8);
+            opacity: 1 !important;
+        }
+
+        .control-bridge button {
+            background: #fff !important;
+            color: #000 !important;
+            border: none !important;
+            padding: 20px 40px;
+            font-weight: 900;
+            font-size: 12px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 160px;
+            opacity: 1 !important;
+        }
+
+        .control-bridge button:hover {
+            transform: scale(1.05);
+            background: #eee !important;
+        }
+
+        .btn-refine {
+            background: transparent !important;
+            color: #fff !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
+        }
+
+        /* BPM MODULE (Center Bar) */
+        .bpm-module {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+        .bpm-module label {
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: 0.4em;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+        }
+        #bpm-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 120px;
+            background: rgba(255,255,255,0.1);
+            height: 2px;
+            outline: none;
+        }
+        #bpm-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            cursor: pointer;
+        }
+        .bpm-display {
+            font-family: 'Fragment Mono', monospace;
+            font-size: 10px;
+            font-weight: 900;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        #bpm-pocket { color: #fff; opacity: 0.4; font-size: 7px; letter-spacing: 0.1em; }
+
+        /* LIFE_STAGE GLOWS - SUBTLE */
+        body.mode-juvenile .pane { box-shadow: inset 0 0 150px rgba(255,255,255,0.02); }
+        body.mode-adolescent .pane { box-shadow: inset 0 0 150px rgba(0,102,255,0.04); }
+        body.mode-maturity .pane { box-shadow: inset 0 0 150px rgba(255,215,0,0.04); }
+        body.mode-urgency .pane { box-shadow: inset 0 0 150px rgba(255,0,0,0.04); }
+
+        /* VIBE BUTTON SETS */
+        .vibe-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.3);
+            font-size: 8px;
+            font-weight: 900;
+            padding: 12px 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .vibe-btn.active {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+        .vibe-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        /* PERFORMANCE HUD ENHANCEMENTS */
+        .perf-dim { opacity: 0.2; filter: blur(2px); transition: all 0.5s ease; }
+        .perf-active { 
+            opacity: 1; 
+            filter: blur(0px); 
+            transform: scale(1.02); 
+            color: #fff;
+            border-left: 2px solid #fff;
+            padding-left: 15px;
+            transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        /* RHYME_HIGHLIGHTS: BRUTALIST_FOCUS */
+        .rhyme-highlight-1 {
+            background: rgba(255, 255, 255, 0.15);
+            border-bottom: 2px solid #fff;
+            color: #fff;
+            padding: 0 2px;
+            font-weight: 700;
+        }
+
+        .rhyme-highlight-2 {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.9);
+            padding: 0 2px;
+        }
+
+        /* BRIDGE_VIBE_GLOWS */
+        .vibe-glow-reality { text-shadow: 0 0 15px rgba(255, 255, 255, 0.4); color: #fff !important; opacity: 1 !important; }
+        .vibe-glow-romantic { text-shadow: 0 0 15px rgba(0, 102, 255, 0.6); color: #0066ff !important; opacity: 1 !important; }
+        .vibe-glow-heavenly { text-shadow: 0 0 15px rgba(255, 215, 0, 0.6); color: #ffd700 !important; opacity: 1 !important; }
+
+        #btn-perf {
+            width: 40px !important;
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            background: transparent !important;
+            color: rgba(255,255,255,0.3) !important;
+        }
+        #btn-perf.active {
+            color: #fff !important;
+            border-color: #fff !important;
+            background: rgba(255,255,255,0.1) !important;
+        }
+
+        .panel-slide {
+            transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            display: flex !important; 
+        }
+        .panel-hidden { transform: translateX(100%); display: none !important; }
+        .panel-history-hidden { transform: translateX(-100%); display: none !important; }
+
+        /* STUDIO_OVERLAYS: GLASS_BRUTALISM */
+        .overlay-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 480px;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(40px) saturate(150%);
+            -webkit-backdrop-filter: blur(40px) saturate(150%);
+            border: 1px solid rgba(255,255,255,0.1);
+            flex-direction: column;
+            z-index: 3000;
+            padding: 60px;
+            box-shadow: 0 0 0 2000px rgba(0,0,0,0.85), 0 50px 100px rgba(0,0,0,0.5);
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            border-radius: 0px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 24px;
+            margin-bottom: 40px;
+        }
+        .panel-header span {
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.3em;
+            color: #fff;
+        }
+        .close-btn {
+            background: transparent;
+            color: #444;
+            border: none;
+            font-size: 9px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+        .close-btn:hover { color: #fff; }
+
+        .config-section { margin-bottom: 40px; }
+        .config-section label {
+            display: block;
+            font-size: 9px;
+            font-weight: 900;
+            color: #555;
+            margin-bottom: 15px;
+            letter-spacing: 0.1em;
+        }
+
+        .stage-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 8px;
+            font-weight: 900;
+            margin-top: 15px;
+            color: #333;
+        }
+        .stage-labels .active { color: #fff; }
+
+        .btn-save {
+            width: 100%;
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 20px;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-save:hover { background: #eee; transform: translateY(-2px); }
+
+        .bpm-readout {
+            font-family: 'Fragment Mono', monospace;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        #bpm-val { font-size: 14px; font-weight: 900; }
+        #bpm-pocket { font-size: 8px; color: #555; font-weight: 900; }
+
+        /* BPM SETTER UI */
+        .bpm-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 8px;
+            margin-bottom: 20px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        #bpm-input {
+            background: transparent;
+            color: #fff;
+            border: none;
+            font-size: 18px;
+            text-align: center;
+            width: 45px;
+            font-family: 'Fragment Mono', monospace;
+            font-weight: 900;
+        }
+
+        /* BPM_PULSE_VISUALIZER */
+        .pulse-dot { 
+            width: 6px; 
+            height: 6px; 
+            border-radius: 50%; 
+            background: #fff; 
+            margin: 5px auto 0;
+            opacity: 0; 
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        @keyframes pulse { 
+            0% { opacity: 1; transform: scale(1); } 
+            50% { opacity: 0.3; transform: scale(1.5); } 
+            100% { opacity: 1; transform: scale(1); } 
+        }
+
+        /* MOBILE RESPONSIVENESS (VERTICAL STACK) */
         @media (max-width: 768px) {
-            .basalt-grid {
-                grid-template-columns: 1fr;
-                overflow-y: auto;
+            .app-shell {
+                flex-direction: column !important;
+                overflow-y: auto !important;
+                height: calc(100vh - 56px - 85px) !important; /* Space for header and bridge */
             }
+            .pane {
+                min-height: 50vh !important;
+                padding: 1.5rem !important;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+            }
+            .control-bridge {
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                transform: none !important;
+                width: 100% !important;
+                height: auto !important;
+                min-height: 85px !important;
+                flex-direction: row !important;
+                padding: 12px !important;
+                gap: 10px !important;
+            }
+            .bpm-module {
+                flex: 1;
+                border-right: 1px solid rgba(255,255,255,0.1);
+                padding-right: 10px !important;
+            }
+            .bridge-grid {
+                flex: 2 !important;
+                display: grid !important;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                gap: 4px !important;
+            }
+            .bridge-grid button, .bridge-vibe-display {
+                margin: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                min-height: 35px;
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+                font-size: 8px !important;
+                padding: 0 !important;
+            }
+            .bridge-vibe-display {
+                border: 1px solid rgba(255,255,255,0.05);
+            }
+            #btn-write { grid-column: 1 / 2; grid-row: 1 / 2; }
+            #btn-perf { grid-column: 2 / 3; grid-row: 1 / 2; }
+            #btn-refine { grid-column: 1 / 3; grid-row: 2 / 3; height: 100% !important; }
+            #bridge-vibe { display: none !important; }
+            .bpm-module label { display: none !important; }
+            .bpm-display { font-size: 8px !important; }
+            #btn-refine { 
+                background: #fff !important; 
+                color: #000 !important;
+                font-weight: 900 !important;
+            }
+            footer { display: none !important; } /* Hide footer on mobile to save space */
         }
+
+        .auth-gate-locked { pointer-events: none !important; opacity: 0.1 !important; filter: grayscale(1); }
+
     </style>
 </head>
 
 <body class="min-h-screen flex flex-col overflow-hidden select-none">
+    <div class="grid-bg"></div>
 
     <!-- TOP BAR -->
     <header class="h-14 border-b border-white/5 flex justify-between items-center px-6 z-50 bg-[#0A0A0A]">
-        <div class="font-['Space_Grotesk'] font-black text-lg tracking-[0.2em] uppercase">saveHXPE // LYRIC ENGINE</div>
+        <div class="font-['Space_Grotesk'] font-black text-lg tracking-[0.2em] uppercase">saveHXPE // OUTWORLD GLOBAL</div>
         <div class="flex items-center space-x-6">
-            <button onclick="togglePanel('history')"
+            <button onclick="window.newSession()"
+                class="text-[10px] font-black tracking-widest uppercase hover:text-red-500 text-gray-500 transition-all flex items-center">
+                <span class="material-symbols-outlined text-sm mr-2">refresh</span> REWIND
+            </button>
+            <button onclick="window.toggleOverlay('archive-panel')"
                 class="text-[10px] font-black tracking-widest uppercase hover:text-white text-gray-500 transition-all flex items-center">
                 <span class="material-symbols-outlined text-sm mr-2">history</span> ARCHIVE
             </button>
-            <button onclick="togglePanel('settings')"
+            <button onclick="window.toggleOverlay('config-panel')"
                 class="text-[10px] font-black tracking-widest uppercase hover:text-white text-gray-500 transition-all flex items-center">
                 <span class="material-symbols-outlined text-sm mr-2">settings</span> CONFIG
             </button>
         </div>
     </header>
 
-    <!-- MAIN STUDIO -->
-    <main class="flex-1 flex relative overflow-hidden">
+    <!-- MAIN STUDIO: OUTWORLD PERFORMANCE ARCHITECTURE -->
+    <main class="flex-1 flex relative overflow-hidden app-shell">
 
         <!-- HISTORY/RMD PANEL (LEFT SLIDE) -->
         <aside id="panel-history"
             class="panel-slide panel-history-hidden absolute left-0 top-0 w-80 h-full bg-[#0F0F0F] border-r border-white/5 z-40 flex flex-col">
             <div class="p-6 border-b border-white/5 flex justify-between items-center">
                 <div class="flex space-x-6">
-                    <button id="tab-history" onclick="toggleSidebarTab('history')"
+                    <button id="tab-history" onclick="window.toggleSidebarTab('history')"
                         class="text-[10px] font-black tracking-widest text-white uppercase">ARCHIVE</button>
-                    <button id="tab-rmd" onclick="toggleSidebarTab('rmd')"
+                    <button id="tab-rmd" onclick="window.toggleSidebarTab('rmd')"
                         class="text-[10px] font-black tracking-widest text-gray-500 uppercase">RMD_DB</button>
                 </div>
-                <button onclick="togglePanel('history')" class="material-symbols-outlined text-sm">close</button>
+                <button onclick="window.togglePanel('history')" class="material-symbols-outlined text-sm">close</button>
             </div>
             <div id="history-list" class="flex-1 overflow-y-auto p-4 space-y-2">
                 <!-- History Items -->
@@ -94,195 +501,482 @@
             class="panel-slide panel-hidden absolute right-0 top-0 w-80 h-full bg-[#0F0F0F] border-l border-white/5 z-40 flex flex-col">
             <div class="p-6 border-b border-white/5 flex justify-between items-center">
                 <span class="text-[10px] font-black tracking-widest uppercase">SYSTEM_CONFIG</span>
-                <button onclick="togglePanel('settings')" class="material-symbols-outlined text-sm">close</button>
+                <button onclick="window.togglePanel('settings')" class="material-symbols-outlined text-sm">close</button>
             </div>
             <div class="flex-1 overflow-y-auto p-8 space-y-10">
                 <div class="space-y-4">
-                    <label class="text-[9px] font-black tracking-widest text-gray-500 uppercase">API_KEY</label>
-                    <input type="password" id="api-key-input" placeholder="GEMINI_UPLINK_KEY"
-                        class="w-full bg-black border border-white/10 p-3 text-xs font-mono focus:border-white focus:ring-0"
-                        autocomplete="off" onchange="updateSetting('apiKey', this.value)">
+                    <label class="text-[9px] font-black tracking-widest text-gray-500 uppercase">ACCESS_CREDENTIALS</label>
+                    <div id="auth-status" class="bg-black border border-white/10 p-4 text-center">
+                        <button onclick="window.signIn()" id="btn-login" class="w-full bg-white text-black py-2 text-[9px] font-black uppercase">LOGIN_VIA_GOOGLE</button>
+                        <button onclick="window.signOut()" id="btn-logout" class="hidden w-full border border-white/20 py-2 text-[9px] font-black uppercase hover:bg-white/5">LOGOUT_PROTOCOL</button>
+                    </div>
+                    <div id="user-info" class="hidden text-[9px] font-black text-gray-500 flex justify-between">
+                        <span>USER:</span>
+                        <span id="user-email">----</span>
+                    </div>
                 </div>
                 <div class="space-y-4">
                     <label class="flex justify-between text-[9px] font-black tracking-widest text-gray-500 uppercase">
                         OUTSIDER_INTENSITY <span id="val-outsider" class="text-white">84</span>
                     </label>
                     <input id="range-outsider" type="range" max="100" min="0" value="84"
-                        oninput="updateSetting('outsiderIntensity', this.value)">
+                        oninput="window.updateSetting('outsiderIntensity', this.value)">
                 </div>
                 <div class="space-y-4">
                     <label class="flex justify-between text-[9px] font-black tracking-widest text-gray-500 uppercase">
                         RHYME_DENSITY <span id="val-rhyme" class="text-white">70</span>
                     </label>
                     <input id="range-rhyme" type="range" max="100" min="0" value="70"
-                        oninput="updateSetting('rhymeDensity', this.value)">
+                        oninput="window.updateSetting('rhymeDensity', this.value)">
+                </div>
+                <div class="space-y-6">
+                    <div class="flex justify-between items-end">
+                        <label class="text-[9px] font-black tracking-widest text-gray-500 uppercase">AWARENESS_LEVEL</label>
+                        <span id="label-awareness" class="text-[10px] font-black text-white uppercase italic">ADOLESCENT_NOIR</span>
+                    </div>
+                    <input id="slider-awareness" type="range" max="2" min="0" value="1" step="1"
+                        class="awareness-slider"
+                        oninput="window.setAwarenessLevel(this.value)">
+                    <div class="flex justify-between text-[7px] font-black text-gray-600 uppercase tracking-tighter">
+                        <span id="label-stage-0">JUVENILE</span>
+                        <span id="label-stage-1">ADOLESCENT</span>
+                        <span id="label-stage-2">MATURITY</span>
+                    </div>
                 </div>
                 <div class="space-y-4">
                     <label class="text-[9px] font-black tracking-widest text-gray-500 uppercase">LOCALIZATION</label>
                     <div class="grid grid-cols-3 border border-white/10">
-                        <button onclick="updateSetting('localization', 'LESOTHO')"
+                        <button onclick="window.updateSetting('localization', 'LESOTHO')"
                             class="loc-btn py-2 text-[8px] font-black uppercase" data-loc="LESOTHO">LSO</button>
-                        <button onclick="updateSetting('localization', 'AFRICAN')"
+                        <button onclick="window.updateSetting('localization', 'AFRICAN')"
                             class="loc-btn py-2 text-[8px] font-black border-x border-white/10 uppercase"
                             data-loc="AFRICAN">AFR</button>
-                        <button onclick="updateSetting('localization', 'GLOBAL')"
+                        <button onclick="window.updateSetting('localization', 'GLOBAL')"
                             class="loc-btn py-2 text-[8px] font-black uppercase" data-loc="GLOBAL">GLO</button>
                     </div>
                 </div>
                 <div class="pt-8 border-t border-white/5">
-                    <button onclick="clearState()"
+                    <button onclick="window.purgeSystem()"
                         class="w-full border border-red-900/40 text-red-900 hover:text-red-500 hover:border-red-500 py-3 text-[9px] font-black transition-all">PURGE_DATA</button>
                 </div>
             </div>
         </aside>
 
-        <!-- CORE CONTENT -->
-        <div class="flex-1 basalt-grid bg-[#0A0A0A]">
-            <!-- INPUT AREA -->
-            <section class="flex-1 flex flex-col p-8 border-r border-white/5 relative">
-                <div class="flex justify-between items-center mb-4">
-                    <div class="text-[10px] font-black tracking-widest text-gray-600 uppercase">RAW_DATA_INPUT <span
-                            id="session-id-display" class="ml-2 text-white/20"></span></div>
-                    <button onclick="newSession()"
-                        class="text-[9px] font-black border border-white/10 px-3 py-1 hover:bg-white hover:text-black transition-all">NEW_START</button>
+        <!-- FIXED CENTER CONTROL BRIDGE -->
+        <div class="control-bridge">
+            <div class="bpm-module auth-locked">
+                <label>METRONOME_PULSE</label>
+                <div class="flex items-center gap-4">
+                    <input type="range" id="bpm-slider" min="72" max="180" value="92" step="1" oninput="window.syncBPM(this.value)">
+                    <div id="bpm-pulse-dot" class="w-1.5 h-1.5 bg-white rounded-full opacity-20 shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
                 </div>
-                <textarea id="input-lyrics" oninput="handleInput(this.value)"
-                    class="flex-1 bg-transparent border-0 focus:ring-0 p-0 text-xl font-medium leading-relaxed placeholder:text-white/5 resize-none"
-                    placeholder="START WRITING OR PASTE DATA..."></textarea>
-
-                <!-- Action Buttons Overlay -->
-                <div class="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col space-y-2 z-10 px-4">
-                    <button id="btn-write" onclick="runEngine()"
-                        class="w-14 h-48 bg-white text-black flex items-center justify-center hover:bg-gray-200 transition-all font-black group">
-                        <span id="btn-write-text" class="vertical-text">WRITE</span>
-                    </button>
-                    <button id="btn-refine" onclick="refineLyrics()"
-                        class="w-14 h-48 bg-black border border-white/10 text-white flex items-center justify-center hover:bg-white hover:text-black transition-all font-black group">
-                        <span id="btn-refine-text" class="vertical-text">REFINE</span>
-                    </button>
+                <div class="bpm-display">
+                    <span id="bpm-number">92</span> 
+                    <span id="bpm-pocket">SOULFUL_POCKET</span>
                 </div>
-            </section>
-
-            <!-- OUTPUT AREA -->
-            <section class="flex-1 flex flex-col bg-[#0F0F0F] relative">
-                <div class="flex justify-between items-center p-6 border-b border-white/5 bg-[#0F0F0F] z-10">
-                    <div class="flex flex-col">
-                        <span class="text-[10px] font-black tracking-widest uppercase">ELEVATED_OUTPUT</span>
-                        <div id="version-stack" class="flex space-x-1 mt-2"></div>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="flex items-center bg-black border border-white/5 px-3 py-1">
-                            <span class="text-[8px] font-black mr-2 opacity-30">BPM</span>
-                            <input type="number" id="bpm-input" value="90"
-                                class="bg-transparent border-0 w-8 p-0 text-[10px] font-black focus:ring-0"
-                                onchange="updateSetting('bpm', this.value)">
-                        </div>
-                        <button onclick="togglePerformance()" id="btn-perf"
-                            class="text-[9px] font-black border border-white/10 px-4 py-1.5 hover:bg-white hover:text-black transition-all uppercase">PERFORMANCE_OFF</button>
-                    </div>
-                </div>
-                <div id="output-lyrics"
-                    class="flex-1 p-10 overflow-y-auto text-xl leading-relaxed whitespace-pre-wrap font-medium">
-                    <div class="text-white/5 italic">FEED SYSTEM DATA TO BEGIN_</div>
-                </div>
-
-                <!-- Rhyme Harvester Slide -->
-                <div id="harvest-panel"
-                    class="hidden absolute bottom-6 left-6 right-6 bg-white text-black p-4 flex justify-between items-center shadow-2xl z-30 slide-up">
-                    <div class="flex flex-col overflow-hidden">
-                        <span class="text-[8px] font-black uppercase opacity-40">HARVEST_CHAIN_DETECTED</span>
-                        <span id="harvest-chain-text" class="text-sm font-bold truncate">...</span>
-                    </div>
-                    <button onclick="acceptHarvest()"
-                        class="bg-black text-white px-4 py-2 text-[10px] font-black uppercase tracking-tighter hover:bg-white hover:text-black border border-black transition-all">SAVE_TO_RMD</button>
-                </div>
-            </section>
+            </div>
+            <div class="bridge-grid">
+                <button id="btn-write" onclick="window.runEngine()" class="auth-locked">
+                    <span id="btn-write-text">WRITE</span>
+                </button>
+                <button id="btn-perf" onclick="window.togglePerformance()" class="auth-locked" title="PERFORMANCE_MODE">
+                    <span class="material-symbols-outlined text-sm">play_arrow</span>
+                </button>
+                <button id="btn-refine" onclick="window.refineLyrics()" class="btn-refine auth-locked">
+                    <span id="btn-refine-text">REFINE</span>
+                </button>
+                <div id="bridge-vibe" class="bridge-vibe-display">REALITY_CHECK</div>
+            </div>
         </div>
+
+        <!-- LEFT PANE: INPUT -->
+        <section class="pane left-pane">
+            <textarea id="input-area" oninput="window.handleInput(this.value)"
+                placeholder="YEAH, THE REVOLUTION IS THE GENOCIDE..."></textarea>
+        </section>
+
+        <!-- RIGHT PANE: OUTPUT -->
+        <section class="pane right-pane">
+            <div id="output-area" 
+                 contenteditable="true" 
+                 spellcheck="false"
+                 oninput="window.handleManualEdit(this.innerText)">
+                <div class="text-white/5 italic">READY FOR_DATA_INPUT...</div>
+            </div>
+
+            <!-- Rhyme Harvester Overlay -->
+            <div id="harvest-panel"
+                class="hidden absolute bottom-6 left-6 right-6 bg-white text-black p-4 flex justify-between items-center shadow-2xl z-30 slide-up">
+                <div class="flex flex-col overflow-hidden">
+                    <span class="text-[8px] font-black uppercase opacity-40">HARVEST_CHAIN_DETECTED</span>
+                    <span id="harvest-chain-text" class="text-sm font-bold truncate">...</span>
+                </div>
+                <button onclick="window.acceptHarvest()"
+                    class="bg-black text-white px-4 py-2 text-[10px] font-black uppercase border border-black transition-all hover:bg-white hover:text-black">SAVE_RMD</button>
+            </div>
+        </section>
     </main>
 
     <!-- FOOTER STATUS -->
-    <footer class="h-8 border-t border-white/5 bg-[#0A0A0A] flex items-center justify-between px-6 z-50">
+    <footer class="h-8 border-t border-white/5 bg-[#000] flex items-center justify-between px-6 z-50">
         <div class="flex items-center space-x-6">
             <div class="flex items-center space-x-2">
-                <div id="status-pixel" class="w-1.5 h-1.5 bg-white"></div><span id="status-text"
-                    class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-500">SYSTEM_CONNECTED</span>
+                <div id="status-pixel" class="w-1.5 h-1.5 bg-white"></div>
+                <span id="system-status" class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-500">
+                    STATUS: READY_FOR_UPLINK // 92 BPM
+                </span>
             </div>
-            <span class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-700">SES_ID: <span
-                    id="footer-sid">----</span></span>
         </div>
-        <div class="flex items-center space-x-4">
-            <button onclick="testAPI()"
-                class="text-[8px] font-black border border-white/20 px-2 py-0.5 hover:bg-white hover:text-black transition-all">API_TEST</button>
-            <span class="text-[8px] font-black tracking-[0.2em] uppercase text-gray-700">LOCALE: LESOTHO_UPLINK</span>
-            <span id="time-display" class="text-[8px] font-black tracking-[0.2em] uppercase text-white">00:00:00</span>
+        <div class="flex items-center space-x-6">
+            <button onclick="window.toggleOverlay('archive-panel')" class="text-[8px] font-black text-gray-600 hover:text-white transition-colors">ARCHIVE</button>
+            <button onclick="window.toggleOverlay('config-panel')" class="text-[8px] font-black text-gray-600 hover:text-white transition-colors">CONFIG</button>
+            <button onclick="window.testAPI()"
+                class="text-[8px] font-black text-white px-2 py-0.5 border border-white/20 hover:bg-white hover:text-black transition-all">
+                DIAGNOSTIC
+            </button>
         </div>
     </footer>
 
-    <script shadow>
-        const IDENTITY_CORE = `Name: saveHXPE. Origin: Lesotho (Kingdom in the Sky). 
-        Aesthetic: Maseru Noir / Basalt-Brutalist. 
-        Tone: Humor_Level: 0.5 (Balanced, grounded irony). 
-        Philosophy: Anchored in street-level reality—Maseru Bridge, Maloti frost, pothole navigation. 
-        Metal State: Basalt (unbreakable foundation, cold but solid). 
-        Lingo: Cross-reference 'Transport & Street' (4+1, border, stop-to-stop) with 'Hustle' (Tiger, Pink, Handout).`;
+    <!-- SYSTEM_OVERLAYS -->
+    
+    <!-- CONFIG_PANEL -->
+    <div id="config-panel" class="overlay-panel" style="display: none;">
+        <div class="panel-header">
+            <span>STUDIO_PARAMETERS</span>
+            <button class="close-btn" onclick="window.toggleOverlay('config-panel')">[ CLOSE ]</button>
+        </div>
 
-        const BASE_PROMPT = `Act as the saveHXPE engine (March 2026 Build).
-        Protocol: Rewriting lyrics with 'Maseru Noir' grounding.
-        1. Contextual Lingo: Use '4+1', 'border', or 'potholes' to anchor travel/movement. Use it to build real-life experiences, not decoration.
-        2. Technical: Multi-syllabic runs (3-syllable chains), internal vowel-matches (Mosaic/Slant).
-        3. Humor: Balance grit with irony (Humor Level 0.5)—real-life struggle vs the industry 'Handout'.
-        4. Metadata: Wrap rhymes in [[ ]]. Output clean Markdown layout. 
-        5. Vibe: Basalt mental state—heavy, grounded, Lesotho-outsider.`;
+        <div class="config-content">
+            <div class="config-section">
+                <label>AWARENESS_LEVEL / LIFE_STAGE</label>
+                <input type="range" id="stage-slider" min="0" max="2" value="1" step="1" 
+                    class="awareness-slider" oninput="window.setAwarenessLevel(this.value)">
+                <div class="stage-labels">
+                    <span id="config-label-0">JUVENILE</span>
+                    <span id="config-label-1">ADOLESCENT</span>
+                    <span id="config-label-2">MATURITY</span>
+                </div>
+            </div>
 
+            <div class="config-section">
+                <label>METRONOME_PULSE (BPM)</label>
+                <div class="flex items-center gap-4 mb-2">
+                    <input type="range" id="bpm-slider-overlay" min="72" max="180" value="92" 
+                        class="awareness-slider flex-1" oninput="window.syncBPM(this.value)">
+                    <div id="bpm-pulse-dot-overlay" class="w-2 h-2 bg-white rounded-full opacity-20"></div>
+                </div>
+                <div class="bpm-readout">
+                    <span id="bpm-val">92</span> 
+                    <span id="bpm-pocket-overlay">SOULFUL_POCKET</span>
+                </div>
+            </div>
+            
+            <div class="config-section">
+                <label>FLOW_PROTOCOL (VIBE)</label>
+                <div class="grid grid-cols-3 border border-white/5">
+                    <button onclick="window.setVibe('REALITY_CHECK')" class="vibe-btn" data-vibe="REALITY_CHECK">REALITY_CHECK</button>
+                    <button onclick="window.setVibe('ROMANTIC_SOUL')" class="vibe-btn border-x border-white/5" data-vibe="ROMANTIC_SOUL">ROMANTIC_SOUL</button>
+                    <button onclick="window.setVibe('HEAVENLY_HUSTLE')" class="vibe-btn" data-vibe="HEAVENLY_HUSTLE">HEAVENLY_HUSTLE</button>
+                </div>
+                <div class="mt-4 text-[7px] text-gray-600 uppercase font-black tracking-widest leading-relaxed" id="vibe-desc">
+                    REALITY_CHECK: High grit, street pressure, and technical storytelling protocols.
+                </div>
+            </div>
+
+            <div class="config-section">
+                <label>LINGUISTIC_LOCALIZATION</label>
+                <div class="grid grid-cols-3 border border-white/10">
+                    <button onclick="window.updateSetting('localization', 'LESOTHO')" class="loc-btn py-2 text-[8px] font-black uppercase" data-loc="LESOTHO">LSO</button>
+                    <button onclick="window.updateSetting('localization', 'AFRICAN')" class="loc-btn py-2 text-[8px] font-black border-x border-white/10 uppercase" data-loc="AFRICAN">AFR</button>
+                    <button onclick="window.updateSetting('localization', 'GLOBAL')" class="loc-btn py-2 text-[8px] font-black uppercase" data-loc="GLOBAL">GLO</button>
+                </div>
+            </div>
+
+            <div class="config-section pt-4">
+                <button class="btn-save" onclick="window.toggleOverlay('config-panel')">LOCK_PARAMETERS</button>
+            </div>
+            
+            <div class="pt-8 border-t border-white/5">
+                <button onclick="window.purgeSystem()" class="w-full border border-red-900/40 text-red-900 hover:text-red-500 hover:border-red-500 py-3 text-[9px] font-black transition-all">FACTORY_RESET</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ARCHIVE_PANEL (History) -->
+    <div id="archive-panel" class="overlay-panel" style="display: none;">
+        <div class="panel-header">
+            <span>VOCAL_ARCHIVES</span>
+            <button class="close-btn" onclick="window.toggleOverlay('archive-panel')">[ CLOSE ]</button>
+        </div>
+        <div id="history-content" class="max-h-[440px] overflow-y-auto space-y-4">
+            <!-- Dynamically populated -->
+        </div>
+        <div class="pt-8 border-t border-white/5 mt-6">
+            <button onclick="window.clearHistory()" class="w-full border border-white/10 text-gray-500 hover:text-white py-3 text-[9px] font-black transition-all">CLEAR_ARCHIVES</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            projectId: "outlandia-330dd",
+            appId: "1:1057370946277:web:edbf30b6a83585a448f20c",
+            storageBucket: "outlandia-330dd.firebasestorage.app",
+            apiKey: "AIzaSyAFnKf-XhB1NGUgi6YVNPTBAEUHIftu448",
+            authDomain: "outlandia-330dd.firebaseapp.com",
+            messagingSenderId: "1057370946277",
+            measurementId: "G-0ZTRG43JNC"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        window.signIn = async () => {
+            try { await signInWithPopup(auth, provider); }
+            catch (e) { alert("AUTH_FAILURE: " + e.message); }
+        };
+
+        window.signOut = async () => {
+            try { await firebaseSignOut(auth); }
+            catch (e) { alert("SIGNOUT_FAILURE: " + e.message); }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            const allowedEmail = 'tembacisse@gmail.com';
+            if (user && user.email === allowedEmail) {
+                state.user = user;
+                $('btn-login').classList.add('hidden');
+                $('btn-logout').classList.remove('hidden');
+                $('user-info').classList.remove('hidden');
+                $('user-email').innerText = user.email.split('@')[0].toUpperCase();
+                document.querySelectorAll('.auth-locked').forEach(b => b.classList.remove('auth-gate-locked'));
+                $('system-status').innerText = 'SESSION_SECURED';
+                $('system-status').style.color = '#00ff00';
+            } else {
+                if (user) alert("ACCESS_DENIED: Unauthorized account.");
+                state.user = null;
+                $('btn-login').classList.remove('hidden');
+                $('btn-logout').classList.add('hidden');
+                $('user-info').classList.add('hidden');
+                document.querySelectorAll('.auth-locked').forEach(b => b.classList.add('auth-gate-locked'));
+                $('system-status').innerText = 'AUTHENTICATION_REQUIRED';
+                $('system-status').style.color = '';
+            }
+        });
+
+        const IDENTITY_CORE = `Identity: saveHXPE, Southern African R&B/Soul. Strictly 70/30 English-to-Tsotsitaal ratio. Soulful and manifestation focus. Use specific lingo: Spanere (Grind), Ntwana (Kid/Vulnerable), Grootman (Wise/Elder), Testimony (Truth), Khotso (Peace). No legacy tech words (Basalt, Fiber-Optics, Launchpad).`;
         let currentLoopId = 0;
+
+        window.toggleOverlay = (id) => {
+            const p = $(id);
+            if (!p) return;
+            const isOpen = p.style.display === "flex";
+            
+            // Close all first for exclusivity
+            document.querySelectorAll('.overlay-panel').forEach(panel => panel.style.display = 'none');
+            
+            if (!isOpen) {
+                p.style.display = "flex";
+                if (id === 'config-panel') syncOverlayInputs();
+                if (id === 'archive-panel') renderHistory();
+            }
+        };
+
+        function syncOverlayInputs() {
+            const modes = ["JUVENILE_HIGH", "ADOLESCENT_NOIR", "MATURITY_ZEN", "OUTWORLD_URGENCY"];
+            const idx = modes.indexOf(state.settings.mode);
+            if ($('stage-slider')) $('stage-slider').value = idx !== -1 ? (idx > 2 ? 2 : idx) : 1;
+            if ($('slider-awareness')) $('slider-awareness').value = idx !== -1 ? (idx > 2 ? 2 : idx) : 1;
+            if ($('bpm-slider-overlay')) $('bpm-slider-overlay').value = state.settings.bpm;
+            window.updateStageLabels(idx !== -1 ? (idx > 2 ? 2 : idx) : 1);
+        }
+
+        window.updateStageLabels = (val) => {
+            // Update sidebar labels
+            ['label-stage-0', 'label-stage-1', 'label-stage-2'].forEach((id, i) => {
+                const el = $(id);
+                if (el) el.style.color = (i == val) ? '#fff' : '#333';
+            });
+            // Update config panel labels
+            ['config-label-0', 'config-label-1', 'config-label-2'].forEach((id, i) => {
+                const el = $(id);
+                if (el) el.style.color = (i == val) ? '#fff' : '#333';
+            });
+        }
+
+        window.setAwarenessLevel = (val) => {
+            const modes = ['JUVENILE_HIGH', 'ADOLESCENT_NOIR', 'MATURITY_ZEN'];
+            const bpms = [120, 82, 92]; // Representative BPMs for the stages
+            const labels = ['JUVENILE (Street/Catchy)', 'ADOLESCENT (Intimate R&B)', 'MATURITY (Grootman Wisdom)'];
+
+            state.settings.mode = modes[val];
+            if ($('label-awareness')) $('label-awareness').innerText = labels[val];
+            
+            window.updateStageLabels(val);
+            window.syncBPM(bpms[val]); // This will also sync sliders and pockets
+            window.save();
+            console.log(`AWARENESS_SHIFT: ${modes[val]} | BPM Initialized: ${bpms[val]}`);
+        };
+
+        let pulseInterval = null;
+        window.syncBPM = (val) => {
+            val = parseInt(val);
+            state.settings.bpm = val;
+            
+            // Sync all BPM sliders and displays
+            if ($('bpm-number')) $('bpm-number').innerText = val;
+            if ($('bpm-val')) $('bpm-val').innerText = val;
+            if ($('bpm-slider')) $('bpm-slider').value = val;
+            if ($('bpm-slider-overlay')) $('bpm-slider-overlay').value = val;
+
+            const zones = [
+                { limit: 88, pocket: "THE_DEEP_CRAWL", mode: "ADOLESCENT_NOIR", color: "mode-adolescent", stage: 1 },
+                { limit: 110, pocket: "SOULFUL_POCKET", mode: "MATURITY_ZEN", color: "mode-maturity", stage: 2 },
+                { limit: 140, pocket: "THE_BOUNCE", mode: "JUVENILE_HIGH", color: "mode-juvenile", stage: 0 },
+                { limit: 180, pocket: "THE_DOUBLE_TIME", mode: "OUTWORLD_URGENCY", color: "mode-urgency", stage: 2 } // Urgency stays in Maturity/Maturity+
+            ];
+
+            const zone = zones.find(z => val <= z.limit) || zones[zones.length - 1];
+            
+            state.settings.mode = zone.mode;
+            if ($('bpm-pocket')) $('bpm-pocket').innerText = zone.pocket;
+            if ($('bpm-pocket-overlay')) $('bpm-pocket-overlay').innerText = zone.pocket;
+            if ($('label-awareness')) {
+                const displayLabels = ['JUVENILE', 'ADOLESCENT', 'MATURITY', 'OUTWORLD'];
+                $('label-awareness').innerText = displayLabels[zone.stage] || zone.mode;
+            }
+            
+            // Sync Awareness Sliders
+            if ($('slider-awareness')) $('slider-awareness').value = zone.stage;
+            if ($('stage-slider')) $('stage-slider').value = zone.stage;
+            window.updateStageLabels(zone.stage);
+
+            $('system-status').innerText = `UPLINK_STABLE // ${zone.pocket} // ${val} BPM`;
+            
+            document.body.classList.remove('mode-juvenile', 'mode-adolescent', 'mode-maturity', 'mode-urgency');
+            document.body.classList.add(zone.color);
+            
+            // Reset Pulse
+            if (pulseInterval) clearInterval(pulseInterval);
+            const ms = 60000 / val;
+            pulseInterval = setInterval(() => {
+                const dots = [$('bpm-pulse-dot'), $('bpm-pulse-dot-overlay')];
+                dots.forEach(dot => {
+                    if (!dot) return;
+                    dot.style.opacity = '1';
+                    dot.style.transform = 'scale(1.8)';
+                    setTimeout(() => {
+                        dot.style.opacity = '0.2';
+                        dot.style.transform = 'scale(1)';
+                    }, 60);
+                });
+            }, ms);
+
+            window.save();
+        };
+
+        window.saveConfig = () => {
+            toggleOverlay('config-panel');
+            window.save();
+        };
+
         let state = {
             settings: {
                 outsiderIntensity: 84,
                 rhymeDensity: 70,
                 localization: 'LESOTHO',
-                apiKey: 'AIzaSyCniBkLos68De6AOhkJYb6hSenVvpMo7DE',
-                bpm: 90
+                bpm: 92,
+                mode: 'MATURITY_ZEN',
+                vibe: 'REALITY_CHECK'
             },
             history: [],
             rmd: [],
+            perf: { active: false, timer: null },
             currentInput: '',
             currentOutput: '',
             versions: [],
-            sessionId: Math.random().toString(36).slice(2, 8).toUpperCase(),
-            perf: { active: false, timer: null }
+            sessionId: Math.random().toString(36).slice(2, 8).toUpperCase()
         };
 
         const $ = id => document.getElementById(id);
 
-        function init() {
+        // BRUTALIST_BOOTSTRAP: Ephemeral Session Logic
+        window.bootstrap = () => {
+            // 1. Purge Ephemeral Data to prevent 'Ghost Text'
+            localStorage.removeItem('lyric_input');
+            localStorage.removeItem('lyric_output');
+            
+            // 2. Load Persisted metadata if it exists (Settings, History)
             const saved = localStorage.getItem('saveHXPE_V8');
-            if (saved) state = { ...state, ...JSON.parse(saved) };
-
-            $('input-lyrics').value = state.currentInput || '';
-            $('session-id-display').innerText = state.sessionId;
-            $('footer-sid').innerText = state.sessionId;
-
-            if (state.currentOutput) {
-                renderOutput(state.currentOutput);
-                updateVersions();
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                state.settings = { ...state.settings, ...(parsed.settings || {}) };
+                state.history = parsed.history || [];
+                state.rmd = parsed.rmd || [];
             }
 
-            applySettings();
+            // 3. FORCE CLEAN WORKSPACE (Clean Slate Protocol)
+            state.currentInput = '';
+            state.currentOutput = '';
+            state.versions = [];
+            state.sessionId = Math.random().toString(36).slice(2, 8).toUpperCase();
+
+            // 4. SYNC UI
+            if ($('input-area')) $('input-area').value = '';
+            if ($('output-area')) $('output-area').innerHTML = '<div class="text-white/5 italic">READY FOR_DATA_INPUT...</div>';
+            
+            window.applySettings();
             startTime();
             renderHistory();
             renderRMD();
+            
+            window.syncBPM(state.settings.bpm);
+            console.log("OUTWORLD_INIT: Clean slate protocol active. Uplink stable.");
         }
 
-        function handleInput(v) { state.currentInput = v; save(); }
+        // Handle window load separately for timing reliability
+        window.onload = window.bootstrap;
 
-        function togglePanel(id) {
+        window.clearState = () => {
+            if (confirm("CLEAR_STATE_PROTOCOL: Reset workspace for fresh generation?")) {
+                state.currentInput = '';
+                state.currentOutput = '';
+                state.versions = [];
+                
+                if ($('input-area')) $('input-area').value = '';
+                if ($('output-area')) $('output-area').innerHTML = '<div class="text-white/5 italic">READY FOR_DATA_INPUT...</div>';
+                
+                updateVersions();
+                window.save();
+                console.log("STATE_RESET: Workspace ready.");
+            }
+        }
+
+        window.handleInput = (v) => { state.currentInput = v; window.save(); }
+
+        window.handleManualEdit = (v) => {
+            // Find the version that CURRENTLY matches state.currentOutput before updating it
+            const currentVerIdx = state.versions.findIndex(ver => ver.text === state.currentOutput);
+            if (currentVerIdx !== -1) {
+                state.versions[currentVerIdx].text = v;
+            }
+            state.currentOutput = v;
+            window.save();
+            updateVersions(); // Refresh buttons to reflect text changes if needed
+        }
+
+        window.togglePanel = (id) => {
             const p = $('panel-' + id);
+            if (!p) return;
             const isRef = id === 'history';
             if (isRef) p.classList.toggle('panel-history-hidden');
             else p.classList.toggle('panel-hidden');
         }
 
-        function toggleSidebarTab(tab) {
+        window.toggleSidebarTab = (tab) => {
             const h = $('history-list');
             const r = $('rmd-list');
             const bh = $('tab-history');
@@ -300,126 +994,103 @@
             renderRMD();
         }
 
-        async function runEngine() {
-            const input = $('input-lyrics').value;
+        window.runEngine = async () => {
+            const input = $('input-area').value;
             if (!input.trim()) return;
-            setLoading(true, 'write');
-            renderOutput(">>> GENERATING...", true); // Clear previous artifacts
+            window.setLoading(true, 'write');
+            window.renderOutput(">>> INITIATING_OUTWORLD_UPLINK...", true);
             try {
-                const prompt = `${IDENTITY_CORE}\nSettings: ${JSON.stringify(state.settings)}\n${BASE_PROMPT}\nInput: ${input}`;
-                const out = await callAI(prompt, state.settings.apiKey);
+                const out = await window.callAI(input);
                 state.versions = [{ text: out, time: new Date().toLocaleTimeString() }];
                 state.currentOutput = out;
                 state.history.unshift({ input, output: out, time: new Date().toLocaleString(), sid: state.sessionId });
-                renderOutput(out, true);
-                updateVersions();
+                window.renderOutput(out, true);
                 renderHistory();
-                save();
-            } catch (e) { renderOutput(e.message); }
-            finally { setLoading(false, 'write'); }
+                window.save();
+            } catch (e) { window.renderOutput(e.message); }
+            finally { window.setLoading(false, 'write'); }
         }
 
-        async function refineLyrics() {
+        window.refineLyrics = async () => {
             if (!state.currentOutput) return;
-            setLoading(true, 'refine');
-            renderOutput(">>> REFINING...", true); // Clear previous artifacts
+            window.setLoading(true, 'refine');
+            window.renderOutput(">>> FINALIZING_TESTIMONY...", true);
             try {
-                const prompt = `${IDENTITY_CORE}\nSettings: ${JSON.stringify(state.settings)}\nRefine instruction: Technical enhancement, keep core meaning. Multis. Internal chains.\nInput: ${state.currentOutput}`;
-                const out = await callAI(prompt, state.settings.apiKey);
+                const prompt = `${IDENTITY_CORE}\nPocket: ${state.settings.bpm} BPM.\nMode Instruction: ${state.settings.mode}\nRefine for R&B soul and technical clarity. Maintain Tsotsi Taal texture.\nInput: ${state.currentOutput}`;
+                const out = await window.callAI(prompt);
                 state.versions.push({ text: out, time: new Date().toLocaleTimeString() });
                 state.currentOutput = out;
-                renderOutput(out, true);
+                window.renderOutput(out, true);
                 updateVersions();
-                save();
-            } catch (e) { renderOutput(e.message); }
-            finally { setLoading(false, 'refine'); }
+                window.save();
+            } catch (e) { window.renderOutput(e.message); }
+            finally { window.setLoading(false, 'refine'); }
         }
 
-        /**
-         * Modernized callAI for Gemini 3.1 (March 2026)
-         * Optimized for low-latency lyric generation.
-         */
-        async function callAI(prompt, apiKeyArg) {
-            // 1. Updated Endpoint (v1beta) and Model ID (Gemini 3.1 Flash-Lite)
-            const API_VERSION = 'v1beta';
-            const MODEL_ID = 'gemini-3.1-flash-lite-preview';
-            
-            // Personal Use Fallback: If no key is provided, use the user's provided key directly
-            const apiKey = apiKeyArg || 'AIzaSyCniBkLos68De6AOhkJYb6hSenVvpMo7DE';
-            
-            const url = `https://generativelanguage.googleapis.com/${API_VERSION}/models/${MODEL_ID}:generateContent?key=${apiKey}`;
+        window.callAI = async (promptText) => {
+            const response = await fetch('/api/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    prompt: promptText, 
+                    bpm: state.settings.bpm,
+                    mode: state.settings.mode,
+                    settings: state.settings
+                })
+            });
 
-            const payload = {
-                contents: [{
-                    parts: [{ text: prompt }]
-                }],
-                generationConfig: {
-                    temperature: 0.85, // Balanced for creative lyrics
-                    maxOutputTokens: 512,
-                    responseMimeType: "text/plain"
-                }
-            };
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await response.json();
-
-                // 2. Error Handling for 404/403
-                if (!response.ok) {
-                    const msg = data.error ? data.error.message : response.statusText;
-                    console.error("CRITICAL UPLINK ERROR:", msg);
-                    throw new Error(`API_ERROR (${response.status}): ${msg}`);
-                }
-
-                console.log("FULL API RESPONSE:", data);
-                return data.candidates[0].content.parts[0].text;
-
-            } catch (error) {
-                console.error("Full Test Error Context:", error);
-                throw error;
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'UPLINK_FAILURE');
             }
+
+            const data = await response.json();
+            // Gemini response mapping
+            return data.candidates[0].content.parts[0].text;
         }
 
-        async function testAPI() {
-            setLoading(true, 'write');
-            renderOutput(">>> INITIATING UPLINK TEST...\n>>> MODEL: gemini-3.1-flash-lite-preview\n>>> ENDPOINT: v1beta/models\n\nPROBING CONNECTION...", true);
+        window.testAPI = async () => {
+            if (!state.user) { alert("AUTH_REQUIRED"); return; }
+            window.setLoading(true, 'write');
+            window.renderOutput(">>> INITIATING UPLINK TEST...\n>>> ENDPOINT: /api/generate\n\nPROBING CONNECTION...", true);
 
             try {
-                const res = await callAI("Write 2 lines of rap lyrics about space exploration.", state.settings.apiKey);
-                renderOutput(`>>> UPLINK SUCCESSFUL\n>>> RESPONSE RECEIVED:\n\n${res}`, true);
-                $('status-text').innerText = 'UPLINK_STABLE';
+                const res = await window.callAI("Write 2 bars of soulful R&B about a miracle in the mountains.");
+                window.renderOutput(`>>> UPLINK SUCCESSFUL\n>>> RESPONSE RECEIVED:\n\n${res}`, true);
+                $('system-status').innerText = 'UPLINK_STABLE';
                 $('status-pixel').className = 'w-1.5 h-1.5 bg-green-500';
             } catch (e) {
-                renderOutput(`>>> UPLINK FAILED\n>>> ERROR: ${e.message}\n\n[CHECK CONSOLE FOR FULL LOG]`, true);
-                $('status-text').innerText = 'UPLINK_CRITICAL';
+                window.renderOutput(`>>> UPLINK FAILED\n>>> ERROR: ${e.message}\n\n[CHECK CONSOLE FOR FULL LOG]`, true);
+                $('system-status').innerText = 'UPLINK_CRITICAL';
                 $('status-pixel').className = 'w-1.5 h-1.5 bg-red-500';
             } finally {
-                setLoading(false, 'write');
+                window.setLoading(false, 'write');
             }
         }
 
-        function renderOutput(text, typing = false) {
+        window.renderOutput = (text, typing = false) => {
             const loopId = ++currentLoopId;
-            const div = $('output-lyrics'); div.innerHTML = '';
+            const div = $('output-area'); div.innerHTML = '';
             const lines = text.split('\n');
 
             // Check for harvesting
             const matches = text.match(/\[\[(.*?)\]\]/g);
-            if (matches && matches.length > 1) showHarvest(matches[0].replace(/[\[\]]/g, '') + ' / ' + matches[1].replace(/[\[\]]/g, ''));
+            if (matches && matches.length > 1) window.showHarvest(matches[0].replace(/[\[\]]/g, '') + ' / ' + matches[1].replace(/[\[\]]/g, ''));
 
             const display = async () => {
                 for (let line of lines) {
                     if (loopId !== currentLoopId) return;
                     const l = document.createElement('div');
                     l.className = 'flow-line';
-                    l.innerHTML = line.replace(/\[\[(.*?)\]\]/g, (m, p1) => `<span class="${Math.random() > 0.5 ? 'rhyme-highlight-1' : 'rhyme-highlight-2'}">${p1}</span>`);
+                    
+                    let formatted = line
+                        .replace(/^\[(HOOK|VERSE|BRIDGE|INTRO|OUTRO)\]/g, '<span class="text-white/30 font-black tracking-widest text-[10px] block mt-8 mb-2">[$1]</span>')
+                        .replace(/\((.*?)\)/g, '<span class="text-white/40 italic font-light ml-2">($1)</span>')
+                        .replace(/\[\[(.*?)\]\]/g, (m, p1) => `<span class="${Math.random() > 0.5 ? 'rhyme-highlight-1' : 'rhyme-highlight-2'}">${p1}</span>`);
+                    
+                    l.innerHTML = formatted;
                     div.appendChild(l);
-                    if (typing) await new Promise(r => setTimeout(r, Math.random() * 50));
+                    if (typing) await new Promise(r => setTimeout(r, Math.random() * 15 + 5)); 
                 }
                 if (loopId !== currentLoopId) return;
                 const cur = document.createElement('span'); cur.className = 'blinking-cursor';
@@ -428,123 +1099,238 @@
             display();
         }
 
-        function updateVersions() {
+        window.updateVersions = () => {
             const v = $('version-stack'); v.innerHTML = '';
             state.versions.forEach((ver, i) => {
                 const b = document.createElement('button');
                 b.className = `w-6 h-6 text-[8px] font-black border ${state.currentOutput === ver.text ? 'bg-white text-black border-white' : 'border-white/10 text-white/20 hover:text-white'}`;
                 b.innerText = `V${i + 1}`;
-                b.onclick = () => { state.currentOutput = ver.text; renderOutput(ver.text); updateVersions(); };
+                b.onclick = () => { state.currentOutput = ver.text; window.renderOutput(ver.text); updateVersions(); };
                 v.appendChild(b);
             });
         }
 
-        function showHarvest(chain) {
+        window.showHarvest = (chain) => {
             $('harvest-chain-text').innerText = chain;
             $('harvest-panel').classList.remove('hidden');
             setTimeout(() => $('harvest-panel').classList.add('hidden'), 8000);
         }
 
-        function acceptHarvest() {
+        window.acceptHarvest = () => {
             const chain = $('harvest-chain-text').innerText;
             if (!state.rmd.find(r => r.chain === chain)) {
                 state.rmd.unshift({ chain, time: Date.now() });
-                save();
+                window.save();
                 renderRMD();
             }
             $('harvest-panel').classList.add('hidden');
         }
 
-        function togglePerformance() {
-            if (state.perf.active) stopPerf();
-            else startPerf();
+        window.togglePerformance = () => {
+            if (state.perf.active) window.stopPerf();
+            else window.startPerf();
         }
 
-        function startPerf() {
-            const lines = $('output-lyrics').querySelectorAll('.flow-line');
-            if (!lines.length) return;
+        window.startPerf = () => {
+            const lines = $('output-area').querySelectorAll('.flow-line');
+            if (lines.length === 0) return;
+
             state.perf.active = true;
             const b = $('btn-perf');
             b.innerText = 'PERFORMANCE_ON'; b.classList.add('bg-white', 'text-black');
 
-            lines.forEach(l => l.classList.add('perf-dim'));
+            let ms = (60000 / state.settings.bpm) * 4; // Default to 4 bars
             let cur = 0;
-            const ms = (60000 / state.settings.bpm) * 4; // 1 bar at 4/4
+
+            lines.forEach(l => l.classList.add('perf-dim'));
+            
             state.perf.timer = setInterval(() => {
-                if (cur >= lines.length) return stopPerf();
-                if (cur > 0) lines[cur - 1].classList.replace('perf-active', 'perf-dim');
+                if (cur >= lines.length) { window.stopPerf(); return; }
+                lines.forEach(l => l.classList.replace('perf-active', 'perf-dim'));
                 lines[cur].classList.replace('perf-dim', 'perf-active');
                 lines[cur].scrollIntoView({ behavior: 'smooth', block: 'center' });
                 cur++;
             }, ms);
         }
 
-        function stopPerf() {
-            clearInterval(state.perf.timer);
+        window.stopPerf = () => {
+            if (state.perf.timer) clearInterval(state.perf.timer);
             state.perf.active = false;
             const b = $('btn-perf');
-            b.innerText = 'PERFORMANCE_OFF'; b.classList.remove('bg-white', 'text-black');
-            $('output-lyrics').querySelectorAll('.flow-line').forEach(l => {
+            if (b) {
+                b.innerText = 'PERFORMANCE_OFF'; 
+                b.classList.remove('bg-white', 'text-black');
+            }
+            $('output-area').querySelectorAll('.flow-line').forEach(l => {
                 l.classList.remove('perf-dim', 'perf-active');
             });
         }
 
-        function renderHistory() {
-            const l = $('history-list'); l.innerHTML = '';
-            state.history.forEach(h => {
-                const d = document.createElement('div');
-                d.className = 'p-4 bg-white/5 border border-white/0 hover:border-white/10 transition-all cursor-pointer group';
-                d.onclick = () => { $('input-lyrics').value = h.input; state.currentInput = h.input; state.currentOutput = h.output; renderOutput(h.output); togglePanel('history'); };
-                d.innerHTML = `<div class="text-[8px] font-black opacity-30 mb-1">${h.time}</div><div class="text-xs font-bold truncate">${h.output.split('\n')[0].replace(/\[\[|\]\]/g, '')}</div>`;
-                l.appendChild(d);
+        window.renderHistory = () => {
+            // Sidebar List
+            const l = $('history-list'); if (l) l.innerHTML = '';
+            // Overlay List
+            const oc = $('history-content'); if (oc) oc.innerHTML = '';
+
+            state.history.forEach((h, i) => {
+                const itemHTML = `
+                    <div class="text-[8px] font-black opacity-30 mb-1 flex justify-between">
+                        <span>${h.time}</span>
+                        <span>SID: ${h.sid || 'LEGACY'}</span>
+                    </div>
+                    <div class="text-xs font-bold truncate">${h.output.split('\n')[0].replace(/\[\[|\]\]/g, '')}</div>
+                `;
+
+                // Sidebar population
+                if (l) {
+                    const d = document.createElement('div');
+                    d.className = 'p-4 bg-white/5 border border-white/0 hover:border-white/10 transition-all cursor-pointer group history-item-anim';
+                    d.style.animationDelay = `${i * 0.05}s`;
+                    d.onclick = () => { window.loadSession(h); window.togglePanel('history'); };
+                    d.innerHTML = itemHTML;
+                    l.appendChild(d);
+                }
+
+                // Overlay population
+                if (oc) {
+                    const d = document.createElement('div');
+                    d.className = 'p-6 bg-[#0A0A0A] border border-white/5 hover:border-white/20 transition-all cursor-pointer group';
+                    d.onclick = () => { window.loadSession(h); window.toggleOverlay('archive-panel'); };
+                    d.innerHTML = itemHTML + `<div class="mt-2 text-[10px] text-gray-500 line-clamp-2 italic">${h.output.slice(0, 100)}...</div>`;
+                    oc.appendChild(d);
+                }
             });
-            if (!state.history.length) l.innerHTML = '<div class="text-[10px] font-black p-4 text-center opacity-20 uppercase">NO_SESSIONS</div>';
+
+            const emptyMsg = '<div class="text-[10px] font-black p-4 text-center opacity-20 uppercase">NO_SESSIONS</div>';
+            if (!state.history.length) {
+                if (l) l.innerHTML = emptyMsg;
+                if (oc) oc.innerHTML = emptyMsg;
+            }
         }
 
-        function renderRMD() {
+        window.loadSession = (h) => {
+            $('input-area').value = h.input;
+            state.currentInput = h.input;
+            state.currentOutput = h.output;
+            window.renderOutput(h.output);
+            state.sessionId = h.sid || state.sessionId;
+        }
+
+        window.clearHistory = () => {
+            if (confirm("PURGE_ALL_ARCHIVES?")) {
+                state.history = [];
+                window.save();
+                window.renderHistory();
+            }
+        }
+        window.renderRMD = () => {
             const l = $('rmd-list'); l.innerHTML = '';
             state.rmd.forEach(r => {
                 const d = document.createElement('div');
                 d.className = 'p-4 bg-white/5 border border-white/0 hover:border-white/10 transition-all cursor-pointer group flex justify-between items-center';
                 d.onclick = () => {
-                    const ta = $('input-lyrics');
+                    const ta = $('input-area');
                     ta.value += (ta.value ? '\n' : '') + r.chain;
                     state.currentInput = ta.value;
-                    save();
+                    window.save();
                 };
                 d.innerHTML = `<div class="text-xs font-bold truncate pr-4">${r.chain}</div><span class="material-symbols-outlined text-xs opacity-20 group-hover:opacity-100">add</span>`;
                 l.appendChild(d);
             });
             if (!state.rmd.length) l.innerHTML = '<div class="text-[10px] font-black p-4 text-center opacity-20 uppercase">EMPTY_RESERVOIR</div>';
         }
+        
+        window.updateSetting = (k, v) => { 
+            state.settings[k] = v; 
+            window.applySettings(); 
+            window.save(); 
+        }
 
-        function updateSetting(k, v) { state.settings[k] = v; applySettings(); save(); }
-        function applySettings() {
-            $('val-outsider').innerText = state.settings.outsiderIntensity;
-            $('val-rhyme').innerText = state.settings.rhymeDensity;
-            $('api-key-input').value = state.settings.apiKey || '';
-            $('range-outsider').value = state.settings.outsiderIntensity;
-            $('range-rhyme').value = state.settings.rhymeDensity;
-            $('bpm-input').value = state.settings.bpm;
+        window.setVibe = (v) => {
+            state.settings.vibe = v;
+            const descs = {
+                'REALITY_CHECK': 'REALITY_CHECK: High grit, street pressure, and technical storytelling protocols.',
+                'ROMANTIC_SOUL': 'ROMANTIC_SOUL: Vulnerable R&B melodies, intimate connection, and soul-soaked lyricism.',
+                'HEAVENLY_HUSTLE': 'HEAVENLY_HUSTLE: Spiritual triumph, manifestation, and visionary Grootman perspectives.'
+            };
+            if ($('vibe-desc')) $('vibe-desc').innerText = descs[v];
+            
+            const bridgeVibe = $('bridge-vibe');
+            if (bridgeVibe) {
+                bridgeVibe.innerText = v;
+                bridgeVibe.classList.remove('vibe-glow-reality', 'vibe-glow-romantic', 'vibe-glow-heavenly');
+                if (v === 'REALITY_CHECK') bridgeVibe.classList.add('vibe-glow-reality');
+                else if (v === 'ROMANTIC_SOUL') bridgeVibe.classList.add('vibe-glow-romantic');
+                else if (v === 'HEAVENLY_HUSTLE') bridgeVibe.classList.add('vibe-glow-heavenly');
+            }
+
+            window.applySettings();
+            window.save();
+            console.log(`VIBE_SHIFT: ${v} activated.`);
+        };
+
+        window.setMode = (m) => {
+            state.settings.mode = m;
+            window.applySettings();
+            window.save();
+            console.log(`MODE_SWITCH: ${m} active.`);
+        };
+
+        window.applySettings = () => {
+            if ($('val-outsider')) $('val-outsider').innerText = state.settings.outsiderIntensity;
+            if ($('val-rhyme')) $('val-rhyme').innerText = state.settings.rhymeDensity;
+            
+            if ($('bpm-slider')) {
+                $('bpm-slider').value = state.settings.bpm;
+                window.syncBPM(state.settings.bpm);
+            }
+
             document.querySelectorAll('.loc-btn').forEach(b => {
                 const active = b.dataset.loc === state.settings.localization;
                 b.classList.toggle('bg-white', active); b.classList.toggle('text-black', active);
             });
+
+            document.querySelectorAll('.vibe-btn').forEach(b => {
+                const active = b.dataset.vibe === state.settings.vibe;
+                b.classList.toggle('active', active);
+            });
+            
+            const bridgeVibe = $('bridge-vibe');
+            if (bridgeVibe) {
+                const v = state.settings.vibe || 'REALITY_CHECK';
+                bridgeVibe.innerText = v;
+                bridgeVibe.classList.remove('vibe-glow-reality', 'vibe-glow-romantic', 'vibe-glow-heavenly');
+                if (v === 'REALITY_CHECK') bridgeVibe.classList.add('vibe-glow-reality');
+                else if (v === 'ROMANTIC_SOUL') bridgeVibe.classList.add('vibe-glow-romantic');
+                else if (v === 'HEAVENLY_HUSTLE') bridgeVibe.classList.add('vibe-glow-heavenly');
+            }
         }
 
-        function setLoading(l, type) {
+        window.setLoading = (l, type) => {
             const b = type === 'write' ? $('btn-write') : $('btn-refine');
             const bt = type === 'write' ? $('btn-write-text') : $('btn-refine-text');
-            if (l) { b.classList.add('loading-pulse'); bt.innerText = 'PROC'; $('status-pixel').classList.add('animate-pulse'); $('status-text').innerText = 'UPLINKING...'; }
-            else { b.classList.remove('loading-pulse'); bt.innerText = type.toUpperCase(); $('status-pixel').classList.remove('animate-pulse'); $('status-text').innerText = 'SYSTEM_CONNECTED'; }
+            if (!b || !bt) return;
+            
+            if (l) { 
+                b.classList.add('loading-pulse'); 
+                bt.innerText = 'PROC'; 
+                $('status-pixel').classList.add('animate-pulse'); 
+                $('system-status').innerText = 'UPLINKING...'; 
+            } else { 
+                b.classList.remove('loading-pulse'); 
+                bt.innerText = type.toUpperCase(); 
+                $('status-pixel').classList.remove('animate-pulse'); 
+                $('system-status').innerText = 'SYSTEM_CONNECTED'; 
+            }
         }
 
-        function newSession() { if (confirm("ARCHIVE AND REWIND?")) { state.currentInput = ''; state.currentOutput = ''; state.versions = []; state.sessionId = Math.random().toString(36).slice(2, 8).toUpperCase(); $('input-lyrics').value = ''; $('output-lyrics').innerHTML = '<div class="text-white/5 italic">FEED SYSTEM DATA TO BEGIN_</div>'; save(); init(); } }
-        function save() { localStorage.setItem('saveHXPE_V8', JSON.stringify(state)); }
-        function clearState() { if (confirm("PURGE SYSTEM?")) { localStorage.clear(); location.reload(); } }
-        function startTime() { setInterval(() => $('time-display').innerText = new Date().toTimeString().split(' ')[0], 1000); }
+        window.newSession = () => { if (confirm("ARCHIVE AND REWIND?")) { state.currentInput = ''; state.currentOutput = ''; state.versions = []; state.sessionId = Math.random().toString(36).slice(2, 8).toUpperCase(); $('input-area').value = ''; $('output-area').innerHTML = '<div class="text-white/5 italic">FEED SYSTEM DATA TO BEGIN_</div>'; save(); bootstrap(); } }
+        window.save = () => { localStorage.setItem('saveHXPE_V8', JSON.stringify(state)); }
+        window.purgeSystem = () => { if (confirm("PURGE_DATA_PROTOCOL: This will wipe all archives and settings. Proceed?")) { localStorage.clear(); location.reload(); } }
+        function startTime() { setInterval(() => { if($('time-display')) $('time-display').innerText = new Date().toTimeString().split(' ')[0] }, 1000); }
 
-        init();
+        // Bootstrap call removed as it's now handled by window.onload
+
     </script>
 </body>
 
