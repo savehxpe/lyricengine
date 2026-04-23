@@ -31,6 +31,8 @@ interface RapStitchState {
   isPaused: boolean;
   performanceBar: number;
   performanceProgress: number;
+  performanceStartTime: number | null;
+  performanceBarStartTime: number | null;
 
   // actions
   setMode: (mode: AppMode) => void;
@@ -72,6 +74,8 @@ export const useRapStitch = create<RapStitchState>((set, get) => ({
   isPaused: false,
   performanceBar: 0,
   performanceProgress: 0,
+  performanceStartTime: null,
+  performanceBarStartTime: null,
 
   setMode: (mode) => {
     const awareness: Awareness =
@@ -174,73 +178,68 @@ export const useRapStitch = create<RapStitchState>((set, get) => ({
     const { isPerforming, isPaused, stopPerformance, output, bpm } = get();
     
     if (isPerforming && !isPaused) {
-      // Pause it
       if (perfTimer) clearTimeout(perfTimer);
-      set({ isPaused: true });
-      return;
-    }
-
-    if (isPaused) {
-      // Resume it
-      set({ isPaused: false });
-      const msPerLine = (60000 / bpm) * 4;
-      const runStep = () => {
-        const { performanceBar, isPerforming, isPaused } = get();
-        if (!isPerforming || isPaused) return;
-
-        const lines = output.split("\n").filter((l) => l.trim().length > 0);
-        if (performanceBar >= lines.length - 1) {
-          set({ performanceProgress: 100 });
-          setTimeout(() => get().stopPerformance(), msPerLine);
-          return;
-        }
-
-        const nextBar = performanceBar + 1;
-        set({
-          performanceBar: nextBar,
-          performanceProgress: (nextBar / lines.length) * 100,
-        });
-
-        perfTimer = setTimeout(runStep, msPerLine);
-      };
-      perfTimer = setTimeout(runStep, msPerLine);
+      set({ isPaused: true, performanceBarStartTime: null });
       return;
     }
 
     if (!output) return;
-
     const lines = output.split("\n").filter((l) => l.trim().length > 0);
     if (lines.length === 0) return;
 
+    const msPerLine = (60000 / bpm) * 4;
+
+    const runTick = () => {
+      const state = get();
+      if (!state.isPerforming || state.isPaused || !state.performanceBarStartTime) return;
+
+      const now = Date.now();
+      const currentMsPerLine = (60000 / state.bpm) * 4;
+      const elapsedInBar = now - state.performanceBarStartTime;
+      
+      if (elapsedInBar >= currentMsPerLine) {
+        // Move to next bar
+        const nextBar = state.performanceBar + 1;
+        if (nextBar >= lines.length) {
+          set({ performanceProgress: 100 });
+          setTimeout(() => get().stopPerformance(), 500);
+          return;
+        }
+        set({
+          performanceBar: nextBar,
+          performanceBarStartTime: now,
+          performanceProgress: (nextBar / lines.length) * 100,
+        });
+      } else {
+        // Just update smooth progress
+        const barProgress = elapsedInBar / currentMsPerLine;
+        const totalProgress = ((state.performanceBar + barProgress) / lines.length) * 100;
+        set({ performanceProgress: totalProgress });
+      }
+
+      perfTimer = setTimeout(runTick, 32); // ~30fps smooth update
+    };
+
+    if (isPaused) {
+      set({ 
+        isPaused: false, 
+        performanceBarStartTime: Date.now() 
+      });
+      runTick();
+      return;
+    }
+
+    // Initial start
     set({
       isPerforming: true,
       isPaused: false,
       performanceBar: 0,
       performanceProgress: 0,
+      performanceStartTime: Date.now(),
+      performanceBarStartTime: Date.now(),
     });
 
-    const msPerLine = (60000 / bpm) * 4;
-
-    const runStep = () => {
-      const { performanceBar, isPerforming, isPaused } = get();
-      if (!isPerforming || isPaused) return;
-
-      if (performanceBar >= lines.length - 1) {
-        set({ performanceProgress: 100 });
-        setTimeout(() => get().stopPerformance(), msPerLine);
-        return;
-      }
-
-      const nextBar = performanceBar + 1;
-      set({
-        performanceBar: nextBar,
-        performanceProgress: (nextBar / lines.length) * 100,
-      });
-
-      perfTimer = setTimeout(runStep, msPerLine);
-    };
-
-    perfTimer = setTimeout(runStep, msPerLine);
+    runTick();
   },
 
   stopPerformance: () => {

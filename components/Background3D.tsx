@@ -4,6 +4,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial, Float, Line } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
+import { useRapStitch } from "@/lib/store";
 
 function ParticleField({ count = 2400 }: { count?: number }) {
   const ref = useRef<THREE.Points>(null);
@@ -20,10 +21,14 @@ function ParticleField({ count = 2400 }: { count?: number }) {
     return arr;
   }, [count]);
 
+  const isPerforming = useRapStitch((s) => s.isPerforming);
+  const isPaused = useRapStitch((s) => s.isPaused);
+
   useFrame((state, delta) => {
     if (!ref.current) return;
-    ref.current.rotation.y += delta * 0.03;
-    ref.current.rotation.x += delta * 0.01;
+    const speedMult = isPerforming ? (isPaused ? 0.2 : 4.0) : 1.0;
+    ref.current.rotation.y += delta * 0.03 * speedMult;
+    ref.current.rotation.x += delta * 0.01 * speedMult;
     const { x, y } = state.pointer;
     ref.current.rotation.y += x * 0.0015;
     ref.current.rotation.x += y * 0.0015;
@@ -72,15 +77,20 @@ function Soundwave({
     basePoints.map((p) => p.clone())
   );
 
+  const isPerforming = useRapStitch((s) => s.isPerforming);
+  const isPaused = useRapStitch((s) => s.isPaused);
+
   useFrame((state) => {
     const t = state.clock.elapsedTime * speed;
+    const performAmp = isPerforming ? (isPaused ? amp * 0.3 : amp * 2.5) : amp;
+    
     for (let i = 0; i < basePoints.length; i++) {
       const bp = basePoints[i];
       const wobble =
-        Math.sin(t + i * 0.25) * amp + Math.cos(t * 0.6 + i * 0.11) * amp * 0.5;
+        Math.sin(t + i * 0.25) * performAmp + Math.cos(t * 0.6 + i * 0.11) * performAmp * 0.5;
       lineRef.current[i].set(bp.x, bp.y + wobble + yOffset, bp.z);
     }
-    if (ref.current) ref.current.rotation.y += 0.0015;
+    if (ref.current) ref.current.rotation.y += 0.0015 * (isPerforming ? 3 : 1);
   });
 
   return (

@@ -27,15 +27,15 @@ interface GenerateBody {
 const VIBE_INSTRUCTIONS: Record<Vibe, string> = {
   HEAVENLY_HUSTLE: `VIBE: HEAVENLY_HUSTLE — High-grid street pressure meets luxurious technical storytelling.
     FEEL: Elevated boss energy. You came from the dirt — Zaka, Ha Foso taxi ranks, coal-smoke mornings — but now you sit in rooms they said you'd never enter. MF DOOM-level multisyllabic density. Every bar must feel like a Grootman adjusting his cufflinks while remembering the 4+1.
-    ARC: 1. The Dirt (Bars 1-4: Where you came from — specific streets, specific struggles, specific hustles), 2. The Climb (Bars 5-12: The transition — what it cost, who you lost, what you carried), 3. The Throne (Bars 13-16: Current position — luxury details woven with street memory. The Zaka and the Zenith in the same breath).
-    LINGO: "Zaka" (money/hustle), "Grootman", "Majiet", "Testimony", "Legacy Altitude", "Khotso". Blend luxury signifiers (tailored, marble, penthouse) with Maseru dust (coal smoke, blanket, taxi rank, border queue).
+    ARC: 1. The Dirt (Bars 1-4: Specific Maseru grit — Ha Foso taxi ranks, coal-smoke at dawn, the dust on Kingsway), 2. The Climb (Bars 5-12: The transition — from the 4+1 to the penthouse, carrying the Seanamarena blanket as a badge of honor), 3. The Throne (Bars 13-16: Current position — marble in the parlour, but still hearing the echo of the Sefapanong cross).
+    LINGO: "Zaka" (money), "Grootman", "Majiet", "Seanamarena", "Mokorotlo", "Khotso", "Legacy Altitude". Blend luxury (tailored, marble) with Maseru dust (Basalt, 4+1 taxis, border queues at Maseru Bridge).
     RHYME DENSITY: MF DOOM-tier. Minimum 4-syllable internal rhyme chains. Stack them. Example: "marble in the parlour, partner / harder than the tar on Kingsway, darker than departure."`,
 
   REALITY_CHECK: `VIBE: REALITY_CHECK — Raw hardships, controversy, and systemic truths. No sugarcoating.
     FEEL: Brutalist journalism in bars. Colonial weight, systemic poverty, border politics, taxi-rank violence, the crushing mundanity of survival in a landlocked kingdom. Sharp political analogies — compare Lesotho's situation to global controversies, celebrity scandals, historical injustices. Make the listener uncomfortable with how specific you are.
-    ARC: 1. The Frame (Bars 1-4: Set the scene with documentary-level detail — a specific place, a specific day, a specific injustice), 2. The Anatomy (Bars 5-12: Dissect it — who benefits, who bleeds, the mechanics of the trap. Draw parallels to colonial history, global politics, or celebrity controversy), 3. The Verdict (Bars 13-16: No resolution — just the weight of truth. End with a line that sits in the chest).
-    LINGO: "Basalt" (the geological foundation — use as metaphor for what endures), "Precious" (pressure/diamond/value), "The Border" (Maseru Bridge as metaphor for every barrier), "4+1" (the shack — the origin point). Reference specific Lesotho history: Moshoeshoe I's diplomacy, the gun wars, migrant labour to SA mines, the textile factory era.
-    TONE: No motivational pivot. No "but we rise" ending. Just truth, laid flat like basalt.`,
+    ARC: 1. The Frame (Bars 1-4: Documentary detail — the textile factories at Thetsane, the queue at the clinic, the weight of the Maloti wind), 2. The Anatomy (Bars 5-12: Dissect the trap — Moshoeshoe I's diplomacy vs. current border politics, the migrant labour legacy, the 4+1 survivalist logic), 3. The Verdict (Bars 13-16: No resolution. Just the basalt truth of the mountain).
+    LINGO: "Basalt" (the geological foundation), "Precious" (pressure/value), "Maseru Bridge" (the barrier), "4+1" (the hustle). Reference specific history: Gun War of 1880, the Liphofung caves, the textile era.
+    TONE: Brutalist, unyielding, journalistic. No motivational pivot.`,
 
   ROMANTIC_SOUL: `VIBE: ROMANTIC_SOUL — "Seen it all, achieved it all." Vulnerable but player-esque.
     FEEL: Post-Heavenly-Hustle mindset. The narrator survived the struggle, built the legacy, and now craves real connection — but can't fully trust it. Cool, detached, deeply intimate. Think Drake's vulnerability meets Marvin Gaye's tension meets a Maseru midnight. Heavy double-entendres comparing romantic love/addiction to street survival or music industry pressure.
@@ -47,7 +47,7 @@ const VIBE_INSTRUCTIONS: Record<Vibe, string> = {
 const PEN_GAME_INSTRUCTIONS: Record<PenGame, string> = {
   STORYTELLER: `PEN_GAME: STORYTELLER — Prioritize narrative arcs, vivid imagery, cinematic scene-setting, and grounded reality. Paint pictures with words. Every bar should advance a story. Use specific Maseru locations, real street names, and sensory details (smell of coal smoke, sound of taxis on Kingsway, texture of blankets at Ha Foso market). No abstract platitudes — ground every line in a scene the listener can see.`,
   WORDPLAY: `PEN_GAME: WORDPLAY — Inject high-level literary devices. Use vivid similes, metaphors, and personification to describe the Maseru/Outworld experience. Avoid cliché rap metaphors ("cold as ice", "hot like fire", "sharp like a knife"); use raw, unexpected comparisons rooted in Southern African textures. Example: "My patience thin like papa on a Tuesday" or "Her voice hit like Maloti wind through a cracked window." Every couplet MUST contain at least one simile, metaphor, or personification. Layer them — a metaphor inside a simile inside a double meaning. Dense, intelligent, rewarding on re-read.`,
-  PUNCHLINE: `PEN_GAME: PUNCHLINE — Every 4 bars MUST end with a heavy punchline. Use the 'surprise factor' — set up a predictable narrative in the first 3 bars, and FLIP it with a double entendre or a clever pop-culture/movie reference on the 4th bar. The setup should misdirect; the payoff should recontextualize. Example: "They said I'd never leave the mountain, never touch the globe / packed my pen, my faith, my Sesotho / now they streaming what I wrote from Tokyo to Soho / turns out the kid from the 4+1 was the GOAT, though." Reference Tarantino, Nolan, Miyazaki, Marvel — but always land the punchline back in Maseru dust.`,
+  PUNCHLINE: `PEN_GAME: PUNCHLINE — Every 4 bars MUST end with a heavy punchline. Use the 'surprise factor' — set up a predictable narrative in the first 3 bars, and FLIP it with a double entendre or a clever pop-culture/movie reference on the 4th bar. Example: "They said I'd never leave the mountain, never touch the globe / packed my pen, my faith, my Seanamarena / now they streaming what I wrote from Tokyo to Pasadena / turns out the kid from the 4+1 was the local arena's redeemer." Reference Tarantino, Nolan, Miyazaki — but land it in Maseru dust.` ,
 };
 
 const MODE_INSTRUCTIONS: Record<Awareness, string> = {
@@ -72,12 +72,13 @@ const MODE_INSTRUCTIONS: Record<Awareness, string> = {
 };
 
 const WORDPLAY_VAULT = `
-  WORDPLAY_VAULT (ALWAYS ACTIVE — applies to ALL modes and vibes):
-  - SIMILES: Must be vivid and unexpected. Root them in Southern African textures, not American clichés. "Quiet like a Maseru Sunday before the taxis start" not "quiet as a mouse."
-  - POP-CULTURE REFERENCES: Aggressively weave in celebrity, cinema, anime, tech, and sports references. Tarantino, Kubrick, Miyazaki, Drake, Kendrick, Messi, Bitcoin, iPhone, Netflix — but ALWAYS land the reference back in Maseru/Lesotho context. The reference must serve the bar, not decorate it.
-  - TSOTSITAAL INTEGRATION: Seamlessly blend South African/Lesotho slang into English bars. Don't translate — let context carry meaning. "Handed the ntwana his zaka, told him dala what you must" should feel natural, not educational.
-  - SURPRISE FACTOR: Every 4 bars MUST contain one line that makes the listener rewind. A punchline, a flip, a reveal, a double meaning that only lands on the second listen.
-  - FORBIDDEN LAZY BARS: No "I'm the best", "they don't understand", "watch me rise", "we gonna make it" without SPECIFIC context. Earn every claim with a detail.
+  WORDPLAY_VAULT (ALWAYS ACTIVE):
+  - SIMILES: Rooted in Southern African textures. "Quiet like a Maseru Sunday before the taxis start", "Hard like the basalt on the Maloti peaks", "Sharp like a Seshoeshoe hem."
+  - POP-CULTURE: Weave in Tarantino, Kubrick, Miyazaki, Drake, Kendrick, Messi, Bitcoin — but land them at the Maseru Bridge or the Thetsane factories.
+  - TSOTSITAAL: "Zaka", "Grootman", "Majiet", "Dala", "Spanere", "4+1", "Ntwana", "Phanda", "Zwakala", "Cherrie", "Mo-ghel".
+  - SURPRISE: Every 4 bars must have a "rewind line."
+  - FORBIDDEN: Lazy claims. No "I'm the best" without a specific Maseru-rooted detail to back it up.
+  - RHYME DENSITY: Minimum 3-syllable phonetic matches. No single-syllable "cat/hat" rhymes. Use <r1>-<r5> tags religiously.
 `;
 
 function buildSystemPrompt(
