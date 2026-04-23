@@ -4,3 +4,13 @@ node_modules/
 ._*
 .vercel
 .env*.local
+
+# next.js
+.next/
+out/
+next-env.d.ts.bak
+.tsbuildinfo
+*.tsbuildinfo
+
+# claude code session state
+.claude/
