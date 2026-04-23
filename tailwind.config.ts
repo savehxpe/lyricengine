@@ -45,6 +45,7 @@ const config: Config = {
       boxShadow: {
         "glow-cyan": "0 0 24px rgba(34,211,238,0.55), 0 0 60px rgba(34,211,238,0.25)",
         "glow-fuchsia": "0 0 24px rgba(232,121,249,0.55), 0 0 60px rgba(232,121,249,0.25)",
+        "glow-white": "0 0 24px rgba(255,255,255,0.55), 0 0 60px rgba(255,255,255,0.25)",
       },
       dropShadow: {
         "glow-cyan": "0 0 20px rgba(34,211,238,0.6)",

@@ -1,25 +1,69 @@
 "use client";
 
-import { motion } from "framer-motion";
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRapStitch } from "@/lib/store";
 import { RhymeHighlighter } from "./RhymeHighlighter";
 
 export function OutputDisplay() {
-  const { output, showRhymes, setShowRhymes, loading, error } = useRapStitch();
+  const {
+    output,
+    showRhymes,
+    setShowRhymes,
+    loading,
+    error,
+    isPerforming,
+    isPaused,
+    performanceBar,
+    performanceProgress,
+  } = useRapStitch();
+
+  const lines = output.split("\n").filter((l) => l.trim().length > 0);
 
   return (
     <section
       aria-label="Output Display"
-      className="flex h-full flex-col rounded-2xl border border-white/10 bg-obsidian-900/40 backdrop-blur-xl"
+      className="flex h-full flex-col rounded-2xl border border-white/10 bg-obsidian-900/40 backdrop-blur-xl overflow-hidden"
     >
-      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-obsidian-900/80 px-6 py-3 backdrop-blur-xl">
+      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-white/10 bg-obsidian-900/80 px-6 py-3 backdrop-blur-xl">
         <h2 className="font-mono text-xs uppercase tracking-brutal text-white/60">
           <span className="text-neon-fuchsia">03 /</span> Output
         </h2>
-        <RhymeToggle checked={showRhymes} onChange={setShowRhymes} />
+        <div className="flex items-center gap-6">
+          {isPerforming && (
+            <div className="flex items-center gap-4">
+              <div className="font-mono text-[10px] text-white/40">
+                BAR <span className="text-white">{performanceBar + 1}</span> / {lines.length}
+              </div>
+              <div className={`flex items-center gap-2 font-mono text-[9px] uppercase tracking-widest ${isPaused ? "text-white/40" : "text-neon-cyan animate-pulse"}`}>
+                <span className={`h-1 w-1 rounded-full ${isPaused ? "bg-white/20" : "bg-neon-cyan"}`} />
+                {isPaused ? "Performance_Paused" : "Live_Performance"}
+              </div>
+            </div>
+          )}
+          <RhymeToggle checked={showRhymes} onChange={setShowRhymes} />
+        </div>
       </header>
 
-      <div className="relative flex-1 overflow-auto p-6">
+      {/* Cinematic Progress Bar */}
+      <AnimatePresence>
+        {isPerforming && (
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            exit={{ scaleX: 0 }}
+            className="z-10 h-0.5 w-full bg-white/5 origin-left"
+          >
+            <motion.div
+              className="h-full bg-neon-cyan shadow-glow-cyan"
+              style={{ width: `${performanceProgress}%` }}
+              transition={{ type: "spring", stiffness: 100, damping: 20 }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="relative flex-1 overflow-auto p-6 scroll-smooth">
         {error && (
           <pre className="whitespace-pre-wrap font-mono text-xs text-neon-rose">
             {error}
@@ -39,19 +83,93 @@ export function OutputDisplay() {
         )}
 
         {!loading && output && (
-          <motion.pre
+          <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="whitespace-pre-wrap break-words font-mono text-sm leading-7 text-white"
+            className="flex flex-col gap-2 font-mono text-sm leading-relaxed text-white"
           >
-            <RhymeHighlighter text={output} active={showRhymes} />
-          </motion.pre>
+            {lines.map((line, idx) => (
+              <LyricLine
+                key={idx}
+                text={line}
+                showRhymes={showRhymes}
+                isPerforming={isPerforming}
+                isActive={isPerforming && idx === performanceBar}
+                isPast={isPerforming && idx < performanceBar}
+              />
+            ))}
+          </motion.div>
         )}
       </div>
     </section>
   );
 }
+
+function LyricLine({
+  text,
+  showRhymes,
+  isPerforming,
+  isActive,
+  isPast,
+}: {
+  text: string;
+  showRhymes: boolean;
+  isPerforming: boolean;
+  isActive: boolean;
+  isPast: boolean;
+}) {
+  const ref = useActiveScroll(isActive);
+
+  return (
+    <motion.div
+      ref={ref}
+      animate={{
+        opacity: isPerforming ? (isActive ? 1 : isPast ? 0.3 : 0.15) : 1,
+        x: isActive ? 4 : 0,
+        scale: isActive ? 1.02 : 1,
+        filter: isActive ? "brightness(1.2)" : "brightness(1)",
+      }}
+      transition={{ duration: 0.3 }}
+      className={`relative whitespace-pre-wrap break-words transition-colors ${
+        isActive ? "text-neon-cyan font-semibold" : "text-white"
+      }`}
+    >
+      <RhymeHighlighter text={text} active={showRhymes} />
+      
+      {isActive && (
+        <motion.span
+          layoutId="active-indicator"
+          className="ml-2 inline-block h-1.5 w-1.5 rounded-full bg-neon-cyan shadow-glow-cyan"
+        />
+      )}
+
+      {isActive && (
+        <motion.div
+          aria-hidden
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0.4, 0] }}
+          transition={{ duration: 0.4, repeat: Infinity }}
+          className="pointer-events-none absolute inset-0 -z-10 bg-neon-cyan/5 blur-sm"
+        />
+      )}
+    </motion.div>
+  );
+}
+
+function useActiveScroll(isActive: boolean) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (isActive && ref.current) {
+      ref.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [isActive]);
+  return ref;
+}
+
 
 function RhymeToggle({
   checked,
